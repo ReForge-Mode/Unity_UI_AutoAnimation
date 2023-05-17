@@ -1,0 +1,39 @@
+MAJOR
+- Float in and Float out animation
+- Zoom in and Zoom out
+- Spin in, spin out
+- Might wanna put the delay per object in the Scriptable Object
+- Might also want to split Fade In and Fade Out Scriptable Object
+
+List of Scriptable Objects:
+- Appear (no animation at all)
+- Disappear (no animation at all)
+- Fly in from left (without smoothing)
+- Fly in from right (without smoothing)
+- Fly in from top (without smoothing)
+- Fly in from bottom (without smoothing)
+- Smooth fly in from left
+- Smooth fly in from right (without smoothing)
+- Smooth fly in from top (without smoothing)
+- Smooth fly in from bottom (without smoothing)
+- Overshoot fly in from left (the curve is over the field)
+- Overshoot fly in from right (the curve is over the field)
+- Overshoot fly in from top (the curve is over the field)
+- Overshoot fly in from bottom (the curve is over the field)
+- Zoom in (from smaller to big)
+- Zoom out (from big to smaller)
+- Smooth Zoom in 
+- Smooth Zoom out
+- Overshoot zoom in
+- Overshoot zoom out
+- Stretch horizontally (only on X axis)
+- Stretch vertically (only on X axis)
+- Smooth Stretch Horizontally
+- Overshoot stretch horizontally
+- Twinkle (text fade in flashes multiple times on the curve)
+
+For the text-altering, we need some shader and masking
+
+
+MINOR
+- Interruptible Fade Out Animation
