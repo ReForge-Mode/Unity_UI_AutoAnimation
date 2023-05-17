@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,17 +20,15 @@ public class UIAnimation : MonoBehaviour
 
     public void Awake()
     {
-        GetComponents();
+        GetComponentsList();
     }
 
     public void OnEnable()
     {
-        //Stop any running animation before triggering a new one
-        if (coroutine != null) StopAllCoroutines();
-        coroutine = StartCoroutine(FadeIn());
+        FadeIn();
     }
 
-    public void GetComponents()
+    private void GetComponentsList()
     {
         //Get the component list, sorted either Depth-first or Breadth-first
         componentList = new List<Component>();
@@ -89,143 +88,175 @@ public class UIAnimation : MonoBehaviour
         }
     }
 
-    private IEnumerator FadeIn()
+    
+    public void FadeIn()
     {
-        //Set starting state
+        StartAnimation(FadeInEnumerator());
+    }
+
+    public void FadeOut()
+    {
+        StartAnimation(FadeOutEnumerator());
+    }
+
+    #region List of All Animations
+    private IEnumerator FadeInEnumerator()
+    {
         if (componentList.Count > 0)
         {
+            /// Set starting state where the UI is invisible
+            SetAllColorAlpha(0);
+
+            /// Calculate delay per element
+            /// The top-most UI on the list gets 0 second delay.
+            /// Each subsequent element gets delayed by the amount.
+            float[] delayTimer = new float[componentList.Count];
             for (int i = 0; i < componentList.Count; i++)
             {
-                if (componentList[i] is TextMeshProUGUI)
-                {
-                    float alpha = 0;
-                    ((TextMeshProUGUI)componentList[i]).alpha = alpha;
-                }
-                else if (componentList[i] is Image)
-                {
-                    float alpha = 0;
-                    Color imageColor = ((Image)componentList[i]).color;
-                    imageColor.a = alpha;
-                    ((Image)componentList[i]).color = imageColor;
-                }
+                delayTimer[i] = delayPerElement * i;
             }
-        }
 
-        //Calculate delay per element. The top UI on the list gets 0 delay.
-        //Each subsequent element gets delayed by the amount.
-        float[] delayTimer = new float[componentList.Count];
-        for (int i = 0; i < componentList.Count; i++)
-        {
-            delayTimer[i] = delayPerElement * i;
-        }
+            /// Keep track of the time for each UI on the list
+            /// because each UI has a different starting time based on the delay
+            float[] elapsedTime = new float[componentList.Count];
 
-
-        //Create the timer
-        float[] elapsedTime = new float[componentList.Count];
-        while (elapsedTime[componentList.Count - 1] < animationPresets.duration)
-        {
-            for (int i = 0; i < componentList.Count; i++)
+            /// Animate the fade in animation
+            while (elapsedTime[componentList.Count - 1] < animationPresets.duration)
             {
-                //Don't do anything when the animation already finished.
-                if (elapsedTime[i] > animationPresets.duration)
+                for (int i = 0; i < componentList.Count; i++)
                 {
-                    continue;
-                }
+                    //Don't do anything when the animation for this item is already finished.
+                    if (elapsedTime[i] > animationPresets.duration) continue;
 
-                //Don't do anything until the delay timer reaches 0
-                if(delayTimer[i] > 0f) 
-                {
-                    delayTimer[i] -= Time.deltaTime;
-                    continue;
-                }
+                    //Don't do anything until the delay timer reaches 0
+                    if (delayTimer[i] > 0f)
+                    {
+                        delayTimer[i] -= Time.deltaTime;
+                        continue;
+                    }
 
-                float t = elapsedTime[i] / animationPresets.duration;
-                float curveValue = animationPresets.curveFadeIn.Evaluate(t);
+                    //Count the alpha value from the animation curve
+                    float t = elapsedTime[i] / animationPresets.duration;
+                    float curveValue = animationPresets.curveAlphaFadeIn.Evaluate(t);
 
-                //Fade in the alpha
-                if (componentList[i] is TextMeshProUGUI)
-                {
-                    float alpha = curveValue * originalAlpha[i];
-                    ((TextMeshProUGUI)componentList[i]).alpha = alpha;
-                }
-                else if (componentList[i] is Image)
-                {
-                    float alpha = curveValue * originalAlpha[i];
-                    Color imageColor = ((Image)componentList[i]).color;
-                    imageColor.a = alpha;
-                    ((Image)componentList[i]).color = imageColor;
-                }
+                    //Fade in the alpha
+                    SetColorAlpha(componentList[i], curveValue * originalAlpha[i]);
 
-                elapsedTime[i] += Time.deltaTime;
+                    elapsedTime[i] += Time.deltaTime;
+                }
+                yield return null;
             }
-            yield return null;
-        }
 
-        ////The process
-        //while (elapsedTime < animationPresets.duration)
-        //{
-        //    //Calculate the "t" interpolation value based on the animation curve
-        //    float t = elapsedTime / animationPresets.duration;
-        //    float curveValue = animationPresets.curveFadeIn.Evaluate(t);
-
-        //    ////Animate the position
-        //    //Vector3 currentPosition = Vector3.Lerp(initialPosition, targetPosition, curveValue);
-        //    //rectTransform.anchoredPosition = currentPosition;
-
-        //    //Fade in the alpha color in TextMeshPro components
-        //    if (componentList.Count > 0)
-        //    {
-        //        for (int i = 0; i < componentList.Count; i++)
-        //        {
-        //            if (delayTimer[i] > 0)
-        //            {
-        //                delayTimer[i] -= Time.deltaTime;
-        //                continue;
-        //            }
-
-        //            if (componentList[i] is TextMeshProUGUI)
-        //            {
-        //                float alpha = curveValue * originalAlpha[i];
-        //                ((TextMeshProUGUI)componentList[i]).alpha = alpha;
-        //            }
-        //            else if (componentList[i] is Image)
-        //            {
-        //                float alpha = curveValue * originalAlpha[i];
-        //                Color imageColor = ((Image)componentList[i]).color;
-        //                imageColor.a = alpha;
-        //                ((Image)componentList[i]).color = imageColor;
-        //            }
-        //        }
-        //    }
-
-        //    elapsedTime += Time.deltaTime;
-        //    yield return null;
-        //}
-
-        //There are always inaccuracies when dealing with float values
-        //So to keep it safe, when the final loop is done, set everything to its final state.
-        //Set the final text color alpha value
-        if (componentList.Count > 0)
-        {
-            for (int i = 0; i < componentList.Count; i++)
-            {
-                if (componentList[i] is TextMeshProUGUI)
-                {
-                    float alpha = originalAlpha[i];
-                    ((TextMeshProUGUI)componentList[i]).alpha = alpha;
-                }
-                else if (componentList[i] is Image)
-                {
-                    float alpha = originalAlpha[i];
-                    Color imageColor = ((Image)componentList[i]).color;
-                    imageColor.a = alpha;
-                    ((Image)componentList[i]).color = imageColor;
-                }
-            }
+            //There are always inaccuracies when dealing with float values
+            //So to keep it safe, when the final loop is done, set everything to its final state.
+            SetAllColorAlpha_Original();
         }
 
         coroutine = null;
     }
+
+    private IEnumerator FadeOutEnumerator()
+    {
+        if (componentList.Count > 0)
+        {
+            /// Set starting state where the UI is invisible
+            SetAllColorAlpha_Original();
+
+            /// Calculate delay per element
+            /// The bottom-most UI on the list gets 0 second delay.
+            /// Each subsequent element gets delayed by the amount.
+            float[] delayTimer = new float[componentList.Count];
+            for (int i = 0; i < componentList.Count; i++)
+            {
+                delayTimer[i] = delayPerElement * (componentList.Count - 1 - i);
+            }
+
+            /// Keep track of the time for each UI on the list
+            /// because each UI has a different starting time based on the delay
+            float[] elapsedTime = new float[componentList.Count];
+
+            /// Animate the fade out animation
+            while (elapsedTime[0] < animationPresets.duration)
+            {
+                for (int i = 0; i < componentList.Count; i++)
+                {
+                    //Don't do anything when the animation for this item is already finished.
+                    if (elapsedTime[i] > animationPresets.duration) continue;
+
+                    //Don't do anything until the delay timer reaches 0
+                    if (delayTimer[i] > 0f)
+                    {
+                        delayTimer[i] -= Time.deltaTime;
+                        continue;
+                    }
+
+                    //Count the alpha value from the animation curve
+                    float t = elapsedTime[i] / animationPresets.duration;
+                    float curveValue = animationPresets.curveMotionFadeOut.Evaluate(t);
+
+                    //Fade in the alpha
+                    SetColorAlpha(componentList[i], curveValue * originalAlpha[i]);
+
+                    elapsedTime[i] += Time.deltaTime;
+                }
+                yield return null;
+            }
+
+            //There are always inaccuracies when dealing with float values
+            //So to keep it safe, when the final loop is done, set everything to its final state.
+            SetAllColorAlpha(0);
+        }
+
+        coroutine = null;
+    }
+    #endregion
+
+    #region Helper Functions
+    private void StartAnimation(IEnumerator enumerator)
+    {
+        //Stop any running animation before triggering a new one
+        if (coroutine != null) StopAllCoroutines();
+        coroutine = StartCoroutine(enumerator);
+    }
+
+    private void SetColorAlpha(Component component, float value)
+    {
+        if (component is TextMeshProUGUI)
+        {
+            float alpha = value;
+            ((TextMeshProUGUI)component).alpha = alpha;
+        }
+        else if (component is Image)
+        {
+            float alpha = value;
+            Color imageColor = ((Image)component).color;
+            imageColor.a = alpha;
+            ((Image)component).color = imageColor;
+        }
+    }
+
+    private void SetAllColorAlpha(float value)
+    {
+        if (componentList.Count > 0)
+        {
+            for (int i = 0; i < componentList.Count; i++)
+            {
+                SetColorAlpha(componentList[i], value);
+            }
+        }
+    }
+
+    private void SetAllColorAlpha_Original()
+    {
+        if (componentList.Count > 0)
+        {
+            for (int i = 0; i < componentList.Count; i++)
+            {
+                SetColorAlpha(componentList[i], originalAlpha[i]);
+            }
+        }
+    }
+    #endregion
 
     public enum SearchMode
     {

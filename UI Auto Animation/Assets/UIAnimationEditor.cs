@@ -13,11 +13,17 @@ public class UIAnimationEditor : Editor
         // Draw the default inspector for MyScript.
         DrawDefaultInspector();
 
-        // Add a button to the inspector.
-        if (GUILayout.Button("Get Text Mesh Components"))
+        if (GUILayout.Button("Fade In"))
         {
             // Do something when the button is clicked.
-            uiAnimation.GetComponents();
+            uiAnimation.FadeIn();
+        }
+
+        // Add a button to the inspector.
+        if (GUILayout.Button("Fade Out"))
+        {
+            // Do something when the button is clicked.
+            uiAnimation.FadeOut();
         }
     }
 }

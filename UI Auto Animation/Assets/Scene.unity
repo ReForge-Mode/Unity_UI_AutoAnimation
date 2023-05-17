@@ -249,11 +249,21 @@ MonoBehaviour:
   componentList:
   - {fileID: 1740794674}
   - {fileID: 616911945}
+  - {fileID: 797494904}
   - {fileID: 354067817}
   - {fileID: 164798985}
   - {fileID: 1942904041}
-  - {fileID: 797494904}
-  originalAlpha: []
+  - {fileID: 1900605411}
+  - {fileID: 1559485241}
+  originalAlpha:
+  - 1
+  - 1
+  - 0.8
+  - 0.6
+  - 0.5019608
+  - 0.4
+  - 0.972549
+  - 1
 --- !u!1 &155516761
 GameObject:
   m_ObjectHideFlags: 0
@@ -1566,7 +1576,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1900605411}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 28175669}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1900605411
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -77,7 +77,7 @@ public class UIAnimation_SlideAndFade : MonoBehaviour
         {
             //Calculate the "t" interpolation value based on the animation curve
             float t = elapsedTime / animationPresets.duration;
-            float curveValue = animationPresets.curveFadeIn.Evaluate(t);
+            float curveValue = animationPresets.curveMotionFadeIn.Evaluate(t);
 
             //Animate the position
             Vector3 currentPosition = Vector3.Lerp(initialPosition, targetPosition, curveValue);
@@ -127,7 +127,7 @@ public class UIAnimation_SlideAndFade : MonoBehaviour
         {
             //Calculate the "t" interpolation value based on the animation curve
             float t = elapsedTime / animationPresets.duration;
-            float curveValue = animationPresets.curveFadeOut.Evaluate(t);
+            float curveValue = animationPresets.curveMotionFadeOut.Evaluate(t);
 
             //Animate the position
             Vector3 currentPosition = Vector3.Lerp(initialPosition, targetPosition, curveValue);
