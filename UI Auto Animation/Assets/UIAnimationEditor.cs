@@ -17,7 +17,7 @@ public class UIAnimationEditor : Editor
         if (GUILayout.Button("Get Text Mesh Components"))
         {
             // Do something when the button is clicked.
-            uiAnimation.GetTextMeshComponents();
+            uiAnimation.GetComponents();
         }
     }
 }
