@@ -243,27 +243,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7ffeee45352e4843b7e1df525780522, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animationPresets: {fileID: 11400000, guid: 24482176c23feda4da110cb53524688a, type: 2}
+  animationEntrancePresets: {fileID: 11400000, guid: 24482176c23feda4da110cb53524688a, type: 2}
+  animationExitPresets: {fileID: 11400000, guid: af25271dd728b7a40ba52a8112fd353c, type: 2}
   searchMode: 0
-  delayPerElement: 0.2
-  componentList:
-  - {fileID: 1740794674}
-  - {fileID: 616911945}
-  - {fileID: 797494904}
-  - {fileID: 354067817}
-  - {fileID: 164798985}
-  - {fileID: 1942904041}
-  - {fileID: 1900605411}
-  - {fileID: 1559485241}
-  originalAlpha:
-  - 1
-  - 1
-  - 0.8
-  - 0.6
-  - 0.5019608
-  - 0.4
-  - 0.972549
-  - 1
+  componentList: []
+  originalAlpha: []
 --- !u!1 &155516761
 GameObject:
   m_ObjectHideFlags: 0
