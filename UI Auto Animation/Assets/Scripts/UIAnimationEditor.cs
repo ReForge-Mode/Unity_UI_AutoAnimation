@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
+#if UNITY_EDITOR
 [CustomEditor(typeof(UIAnimation))]
 public class UIAnimationEditor : Editor
 {
@@ -10,20 +11,17 @@ public class UIAnimationEditor : Editor
     {
         UIAnimation uiAnimation = (UIAnimation)target;
 
-        // Draw the default inspector for MyScript.
         DrawDefaultInspector();
 
-        if (GUILayout.Button("Fade In"))
+        if (GUILayout.Button("Entrance Animation"))
         {
-            // Do something when the button is clicked.
-            uiAnimation.FadeIn();
+            uiAnimation.EntranceAnimation();
         }
 
-        // Add a button to the inspector.
-        if (GUILayout.Button("Fade Out"))
+        if (GUILayout.Button("Exit Animation"))
         {
-            // Do something when the button is clicked.
-            uiAnimation.FadeOut();
+            uiAnimation.ExitAnimation();
         }
     }
 }
+#endif

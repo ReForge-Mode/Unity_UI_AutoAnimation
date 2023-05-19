@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09becc92ca7be05459bdfa3f9c10c5b0, type: 3}
   m_Name: Animation Float Fade In
   m_EditorClassIdentifier: 
-  duration: 0.5
+  duration: 0.25
   delayPerElement: 0.2
   curveAlpha:
     serializedVersion: 2
@@ -38,8 +38,8 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  offsetPosition: {x: 0, y: 10}
-  curveMotion:
+  offsetPosition: {x: 0, y: 25}
+  curvePosition:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
@@ -65,6 +65,31 @@ MonoBehaviour:
     m_RotationOrder: 4
   offsetScale: {x: 1.2, y: 1.2}
   curveScale:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  offsetRotation: {x: 0, y: 0, z: 20}
+  curveRotation:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3

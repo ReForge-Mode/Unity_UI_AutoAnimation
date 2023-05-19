@@ -1,9 +1,14 @@
-MAJOR
-- Float in and Float out animation
-- Zoom in and Zoom out
-- Spin in, spin out
-- Might wanna put the delay per object in the Scriptable Object
-- Might also want to split Fade In and Fade Out Scriptable Object
+Easing Curves: https://easings.net/
+
+THINGS TO DO
+- Optimization: Only do the checkmarked operation in the editor (Use Transition)
+- Documentation
+- Exclude Button Text in Position and Rotation option
+- Interruptible Fade In/Out Animation
+
+FUTURE FEATURES
+- For the text-altering, we need some shader and masking
+- Emphasis (Effects over lifetime, with automatic fade out timer)
 
 List of Scriptable Objects:
 - Appear (no animation at all)
@@ -30,10 +35,5 @@ List of Scriptable Objects:
 - Stretch vertically (only on X axis)
 - Smooth Stretch Horizontally
 - Overshoot stretch horizontally
-- Twinkle (text fade in flashes multiple times on the curve)
-
-For the text-altering, we need some shader and masking
 
 
-MINOR
-- Interruptible Fade Out Animation
