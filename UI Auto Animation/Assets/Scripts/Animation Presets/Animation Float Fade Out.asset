@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   duration: 0.25
   delayPerElement: 0.2
+  useAlphaAnimation: 1
   curveAlpha:
     serializedVersion: 2
     m_Curve:
@@ -38,6 +39,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  usePositionAnimation: 1
   offsetPosition: {x: 0, y: 25}
   curvePosition:
     serializedVersion: 2
@@ -63,6 +65,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  useScaleAnimation: 1
   offsetScale: {x: 0.8, y: 0.8}
   curveScale:
     serializedVersion: 2
@@ -88,7 +91,8 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  offsetRotation: {x: 0, y: 0, z: 30}
+  useRotationAnimation: 0
+  offsetRotation: {x: 0, y: 0, z: 0}
   curveRotation:
     serializedVersion: 2
     m_Curve:

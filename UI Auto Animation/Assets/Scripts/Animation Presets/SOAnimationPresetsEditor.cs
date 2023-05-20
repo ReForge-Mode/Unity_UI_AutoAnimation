@@ -1,91 +1,122 @@
 using UnityEditor;
 using UnityEngine;
 
+/// <summary>
+/// This Editor disable elements as the boolean is enabled or disabled
+/// </summary>
 #if UNITY_EDITOR
 [CustomEditor(typeof(SOAnimationPresets))]
-public class YourScriptNameEditor : Editor
+public class SOAnimationPresetsEditor : Editor
 {
-    SerializedProperty durationProp;
-    SerializedProperty delayPerElementProp;
-    SerializedProperty curveAlphaProp;
-    SerializedProperty offsetPositionProp;
-    SerializedProperty curvePositionProp;
-    SerializedProperty offsetScaleProp;
-    SerializedProperty curveScaleProp;
-    SerializedProperty offsetRotationProp;
-    SerializedProperty curveRotationProp;
+    private SerializedProperty duration;
+    private SerializedProperty delayPerElement;
 
-    bool showFadeInOutAlpha = true;
-    bool showFloatInOutPosition = true;
-    bool showZoomInOutScale = true;
-    bool showSpinInOutRotation = true;
+    private SerializedProperty useAlphaAnimation;
+    private SerializedProperty alphaDuration;
+    private SerializedProperty curveAlpha;
 
-    void OnEnable()
+    private SerializedProperty usePositionAnimation;
+    private SerializedProperty positionDuration;
+    private SerializedProperty offsetPosition;
+    private SerializedProperty curvePosition;
+
+    private SerializedProperty useScaleAnimation;
+    private SerializedProperty scaleDuration;
+    private SerializedProperty offsetScale;
+    private SerializedProperty curveScale;
+
+    private SerializedProperty useRotationAnimation;
+    private SerializedProperty rotationDuration;
+    private SerializedProperty offsetRotation;
+    private SerializedProperty curveRotation;
+
+    private void OnEnable()
     {
-        durationProp = serializedObject.FindProperty("duration");
-        delayPerElementProp = serializedObject.FindProperty("delayPerElement");
-        curveAlphaProp = serializedObject.FindProperty("curveAlpha");
-        offsetPositionProp = serializedObject.FindProperty("offsetPosition");
-        curvePositionProp = serializedObject.FindProperty("curvePosition");
-        offsetScaleProp = serializedObject.FindProperty("offsetScale");
-        curveScaleProp = serializedObject.FindProperty("curveScale");
-        offsetRotationProp = serializedObject.FindProperty("offsetRotation");
-        curveRotationProp = serializedObject.FindProperty("curveRotation");
+        duration = serializedObject.FindProperty("duration");
+        delayPerElement = serializedObject.FindProperty("delayPerElement");
+
+        useAlphaAnimation = serializedObject.FindProperty("useAlphaAnimation");
+        alphaDuration = serializedObject.FindProperty("alphaDuration");
+        curveAlpha = serializedObject.FindProperty("curveAlpha");
+
+        usePositionAnimation = serializedObject.FindProperty("usePositionAnimation");
+        positionDuration = serializedObject.FindProperty("positionDuration");
+        offsetPosition = serializedObject.FindProperty("offsetPosition");
+        curvePosition = serializedObject.FindProperty("curvePosition");
+
+        useScaleAnimation = serializedObject.FindProperty("useScaleAnimation");
+        scaleDuration = serializedObject.FindProperty("scaleDuration");
+        offsetScale = serializedObject.FindProperty("offsetScale");
+        curveScale = serializedObject.FindProperty("curveScale");
+
+        useRotationAnimation = serializedObject.FindProperty("useRotationAnimation");
+        rotationDuration = serializedObject.FindProperty("rotationDuration");
+        offsetRotation = serializedObject.FindProperty("offsetRotation");
+        curveRotation = serializedObject.FindProperty("curveRotation");
     }
 
     public override void OnInspectorGUI()
     {
         serializedObject.Update();
 
-        durationProp.floatValue = EditorGUILayout.FloatField("Duration", durationProp.floatValue);
-        delayPerElementProp.floatValue = EditorGUILayout.FloatField("Delay Per Element", delayPerElementProp.floatValue);
+        duration.floatValue = EditorGUILayout.FloatField("Duration", duration.floatValue);
+        delayPerElement.floatValue = EditorGUILayout.FloatField("Delay Per Element", delayPerElement.floatValue);
 
 
         EditorGUILayout.Space(20);
-        showFadeInOutAlpha = EditorGUILayout.Toggle("Use Alpha Transition", showFadeInOutAlpha);
-        EditorGUI.BeginDisabledGroup(!showFadeInOutAlpha);
+        EditorGUILayout.PropertyField(useAlphaAnimation, new GUIContent("Use Alpha Animation"));
+        EditorGUI.BeginDisabledGroup(!useAlphaAnimation.boolValue);
         {
             EditorGUI.indentLevel++;
-            EditorGUILayout.PropertyField(curveAlphaProp, new GUIContent("Curve Alpha"));
+            EditorGUILayout.PropertyField(alphaDuration);
+            EditorGUILayout.PropertyField(curveAlpha);
             EditorGUI.indentLevel--;
         }
         EditorGUI.EndDisabledGroup();
 
 
         EditorGUILayout.Space(20);
-        showFloatInOutPosition = EditorGUILayout.Toggle("Use Position Transition", showFloatInOutPosition);
-        EditorGUI.BeginDisabledGroup(!showFloatInOutPosition);
+        EditorGUILayout.PropertyField(usePositionAnimation, new GUIContent("Use Position Animation"));
+        EditorGUI.BeginDisabledGroup(!usePositionAnimation.boolValue);
         {
             EditorGUI.indentLevel++;
-            EditorGUILayout.PropertyField(offsetPositionProp, new GUIContent("Offset Position"));
-            EditorGUILayout.PropertyField(curvePositionProp, new GUIContent("Curve Position"));
+            EditorGUILayout.PropertyField(positionDuration);
+            EditorGUILayout.PropertyField(offsetPosition);
+            EditorGUILayout.PropertyField(curvePosition);
             EditorGUI.indentLevel--;
         }
         EditorGUI.EndDisabledGroup();
 
 
         EditorGUILayout.Space(20);
-        showZoomInOutScale = EditorGUILayout.Toggle("Use Scale Transition", showZoomInOutScale);
-        EditorGUI.BeginDisabledGroup(!showZoomInOutScale);
+        EditorGUILayout.PropertyField(useScaleAnimation, new GUIContent("Use Scale Animation"));
+        EditorGUI.BeginDisabledGroup(!useScaleAnimation.boolValue);
         {
             EditorGUI.indentLevel++;
-            EditorGUILayout.PropertyField(offsetScaleProp, new GUIContent("Offset Scale"));
-            EditorGUILayout.PropertyField(curveScaleProp, new GUIContent("Curve Scale"));
+            EditorGUILayout.PropertyField(scaleDuration);
+            EditorGUILayout.PropertyField(offsetScale);
+            EditorGUILayout.PropertyField(curveScale);
             EditorGUI.indentLevel--;
         }
         EditorGUI.EndDisabledGroup();
 
 
         EditorGUILayout.Space(20);
-        showSpinInOutRotation = EditorGUILayout.Toggle("Use Rotation Transition", showSpinInOutRotation);
-        EditorGUI.BeginDisabledGroup(!showSpinInOutRotation);
+        EditorGUILayout.PropertyField(useRotationAnimation, new GUIContent("Use Rotation Animation"));
+        EditorGUI.BeginDisabledGroup(!useRotationAnimation.boolValue);
         {
             EditorGUI.indentLevel++;
-            EditorGUILayout.PropertyField(offsetRotationProp, new GUIContent("Offset Rotation"));
-            EditorGUILayout.PropertyField(curveRotationProp, new GUIContent("Curve Rotation"));
+            EditorGUILayout.PropertyField(rotationDuration);
+            EditorGUILayout.PropertyField(offsetRotation);
+            EditorGUILayout.PropertyField(curveRotation);
             EditorGUI.indentLevel--;
         }
         EditorGUI.EndDisabledGroup();
+
+        EditorGUILayout.Space(20);
+        EditorGUILayout.HelpBox("All Animation Curves must start at value 0 and ends in value 1, " +
+                                "even if it is used for fade out transition. " +
+                                "It is used in interpolation, not for setting values", MessageType.Info);
 
         serializedObject.ApplyModifiedProperties();
     }

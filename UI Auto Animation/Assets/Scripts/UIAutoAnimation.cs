@@ -4,15 +4,16 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UIAnimation : MonoBehaviour
+public class UIAutoAnimation : MonoBehaviour
 {
     public SOAnimationPresets animationEntrancePresets;     
-    public SOAnimationPresets animationExitPresets;            
+    public SOAnimationPresets animationExitPresets;
 
+    [Tooltip("Determines the order of the items shown when" +
+             "SOAnimationPresets's delay per element is bigger than zero")]
     public SearchMode searchMode;
 
-    [Space]
-    [Header("Debug")]
+    [Space][Header("Debug")]
     public List<Component> componentList;
     public List<RectTransform> rectTransformList;
     public List<float> originalAlpha;
@@ -43,7 +44,7 @@ public class UIAnimation : MonoBehaviour
     {
         if (componentList.Count > 0)
         {
-            List<Vector2> offsetPositionList = CreateOffsetPositionList(animationEntrancePresets.offsetPosition);
+            Vector2[] offsetPositionList = CreateOffsetPositionList(animationEntrancePresets);
             List<Vector3> offsetScaleList = CreateOffsetScaleList(animationEntrancePresets.offsetScale);
             List<Vector3> offsetRotationList = CreateOffsetRotationList(animationEntrancePresets.offsetRotation);
 
@@ -56,7 +57,7 @@ public class UIAnimation : MonoBehaviour
             /// Calculate delay per element
             /// The top-most UI on the list gets 0 second delay.
             /// Each subsequent element gets delayed by the amount.
-            float[] delayTimer = CalculateDelayTimer(DelayTimerType.TopToBottom);
+            float[] delayTimer = CalculateDelayTimer(DelayTimerType.TopToBottom, animationEntrancePresets);
 
             /// Keep track of the time for each UI on the list
             /// because each UI has a different starting time based on the delay
@@ -119,7 +120,7 @@ public class UIAnimation : MonoBehaviour
     {
         if (componentList.Count > 0)
         {
-            List<Vector2> offsetPositionList = CreateOffsetPositionList(animationExitPresets.offsetPosition);
+            Vector2[] offsetPositionList = CreateOffsetPositionList(animationExitPresets);
             List<Vector3> offsetScaleList = CreateOffsetScaleList(animationExitPresets.offsetScale);
             List<Vector3> offsetRotationList = CreateOffsetRotationList(animationExitPresets.offsetRotation);
 
@@ -132,7 +133,7 @@ public class UIAnimation : MonoBehaviour
             /// Calculate delay per element
             /// The bottom-most UI on the list gets 0 second delay.
             /// Each subsequent element gets delayed by the amount.
-            float[] delayTimer = CalculateDelayTimer(DelayTimerType.BottomToTop);
+            float[] delayTimer = CalculateDelayTimer(DelayTimerType.BottomToTop, animationExitPresets);
 
             /// Keep track of the time for each UI on the list
             /// because each UI has a different starting time based on the delay
@@ -190,41 +191,11 @@ public class UIAnimation : MonoBehaviour
         }
     }
     
-    private List<Vector2> CreateOffsetPositionList(Vector2 offsetPosition)
-    {
-        List<Vector2> offsetPositionList = new List<Vector2>();
-        for (int i = 0; i < componentList.Count; i++)
-        {
-            Vector2 currentPosition = rectTransformList[i].anchoredPosition;
-            Vector2 offset = currentPosition + offsetPosition;
-            offsetPositionList.Add(offset);
-        }
-        return offsetPositionList;
-    }
-
-    private List<Vector3> CreateOffsetScaleList(Vector2 offsetScale)
-    {
-        List<Vector3> offsetScaleList = new List<Vector3>();
-        for (int i = 0; i < componentList.Count; i++)
-        {
-            Vector3 offset = originalScale[i] * offsetScale;
-            offsetScaleList.Add(offset);
-        }
-        return offsetScaleList;
-    }
-
-    private List<Vector3> CreateOffsetRotationList(Vector3 offsetRotation)
-    {
-        List<Vector3> offsetRotationList = new List<Vector3>();
-        for (int i = 0; i < componentList.Count; i++)
-        {
-            Vector3 offset = originalRotation[i] + offsetRotation;
-            offsetRotationList.Add(offset);
-        }
-        return offsetRotationList;
-    }
-
     #region Helper Functions
+    /// <summary>
+    /// Search all components that will be used for animation
+    /// and store their original alpha, position, scale, and rotation
+    /// </summary>
     private void GetComponentsList()
     {
         //Get the component list, sorted either Depth-first or Breadth-first
@@ -302,17 +273,35 @@ public class UIAnimation : MonoBehaviour
         }
     }
 
-    private float[] CalculateDelayTimer(DelayTimerType delayTimerType)
+    /// <summary>
+    /// Returns a list of timing for each element in the list,
+    /// based on the animation presets scriptable object.
+    /// </summary>
+    /// <param name="delayTimerType">TopToBottom is used in entrance animation. BottomToTop is used in exit animation</param>
+    /// <param name="animationPresets">Specify to get the delayPerElement value from entrance or exit presets</param>
+    /// <returns>Array of delayTimer to count the animation delay in each element on the list</returns>
+    private float[] CalculateDelayTimer(DelayTimerType delayTimerType, SOAnimationPresets animationPresets)
     {
         float[] delayTimer = new float[componentList.Count];
         for (int i = 0; i < componentList.Count; i++)
         {
+            //For "Top to Bottom" used in Entrance Animation, it gives the first item on the list
+            //value timer 0 second, and increment each item by delayTimer in the AnimationPresets.
+            //For "Bottom to Top" used in Exit Animation, it does the opposite, where the last item is given 0
+            //and increment each item backwards.
+
             int increment = (delayTimerType == DelayTimerType.TopToBottom) ? i : (componentList.Count - 1 - i);
-            delayTimer[i] = animationEntrancePresets.delayPerElement * increment;
+            delayTimer[i] = animationPresets.delayPerElement * increment;
         }
         return delayTimer;
     }
 
+    /// <summary>
+    /// Set the component's alpha.
+    /// It handles if the component is TextMeshProUGUI or an Image UI.
+    /// </summary>
+    /// <param name="component"></param>
+    /// <param name="value"></param>
     private void SetColorAlpha(Component component, float value)
     {
         if (component is TextMeshProUGUI)
@@ -329,6 +318,10 @@ public class UIAnimation : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Set all components' alpha to zero. 
+    /// This is used at the start of the entrance animation and at the end of exit animation.
+    /// </summary>
     private void SetAllColorAlpha_Zero()
     {
         if (componentList.Count > 0)
@@ -340,6 +333,10 @@ public class UIAnimation : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Set all components' alpha to its original value. 
+    /// This is used at the end of the entrance animation and at the start of exit animation.
+    /// </summary>
     private void SetAllColorAlpha_Original()
     {
         if (componentList.Count > 0)
@@ -351,11 +348,20 @@ public class UIAnimation : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Helper function to set the position of rectTransform without ever seeing rect.anchoredPosition
+    /// </summary>
+    /// <param name="rect"></param>
+    /// <param name="value"></param>
     private void SetPosition(RectTransform rect, Vector2 value)
     {
         rect.anchoredPosition = value;
     }
 
+    /// <summary>
+    /// Set all components' position back to its original position. 
+    /// This is used at the end of the entrance animation and at the start of exit animation.
+    /// </summary>
     private void SetAllPosition_Original()
     {
         if (rectTransformList.Count > 0)
@@ -367,6 +373,10 @@ public class UIAnimation : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Set all components' position to its animation-ready offset position. 
+    /// This is used at the start of the entrance animation and at the end of exit animation.
+    /// </summary>
     private void SetAllPosition_Offset(Vector2 offsetPosition)
     {
         if (rectTransformList.Count > 0)
@@ -379,11 +389,20 @@ public class UIAnimation : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Helper function to set the scale of rectTransform without ever seeing rect.localScale
+    /// </summary>
+    /// <param name="rect"></param>
+    /// <param name="value"></param>
     private void SetScale(RectTransform rect, Vector3 value)
     {
         rect.localScale = value;
     }
 
+    /// <summary>
+    /// Set all components' scale back to its original scale. 
+    /// This is used at the end of the entrance animation and at the start of exit animation.
+    /// </summary>
     private void SetAllScale_Original()
     {
         if (rectTransformList.Count > 0)
@@ -395,6 +414,11 @@ public class UIAnimation : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Set all components' scale to its animation-ready offset scale. 
+    /// This is used at the start of the entrance animation and at the end of exit animation. 
+    /// </summary>
+    /// <param name="offsetScaleList"></param>
     private void SetAllScale_Offset(List<Vector3> offsetScaleList)
     {
         if (rectTransformList.Count > 0)
@@ -406,11 +430,21 @@ public class UIAnimation : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Helper function to set the rotation of rectTransform without ever seeing rect.localRotation 
+    /// or dealing with Quaternion-Vector3 conversion mess
+    /// </summary>
+    /// <param name="rect"></param>
+    /// <param name="rotation"></param>
     private void SetRotation(RectTransform rect, Vector3 rotation)
     {
         rect.localRotation = Quaternion.Euler(rotation);
     }
 
+    /// <summary>
+    /// Set all components' rotation back to its original rotation. 
+    /// This is used at the end of the entrance animation and at the start of exit animation.
+    /// </summary>
     private void SetAllRotation_Original()
     {
         if (rectTransformList.Count > 0)
@@ -422,6 +456,11 @@ public class UIAnimation : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Set all components' rotation to its animation-ready offset rotation. 
+    /// This is used at the start of the entrance animation and at the end of exit animation. 
+    /// </summary>
+    /// <param name="offsetRotationList"></param>
     private void SetAllRotation_Offset(List<Vector3> offsetRotationList)
     {
         if (rectTransformList.Count > 0)
@@ -433,6 +472,47 @@ public class UIAnimation : MonoBehaviour
         }
     }
 
+
+    /// <summary>
+    /// Create a list of offsetPosition to animate to and from. 
+    /// </summary>
+    /// <param name="animationPresets">
+    /// Specify which animationPresets to get the right offsetPosition (entrance or exit animation)
+    /// </param>
+    /// <returns></returns>
+    private Vector2[] CreateOffsetPositionList(SOAnimationPresets animationPresets)
+    {
+        Vector2[] offsetPositionList = new Vector2[componentList.Count];
+        for (int i = 0; i < componentList.Count; i++)
+        {
+            Vector2 currentPosition = rectTransformList[i].anchoredPosition;
+            Vector2 offset = currentPosition + animationPresets.offsetPosition;
+            offsetPositionList[i] = offset;
+        }
+        return offsetPositionList;
+    }
+
+    private List<Vector3> CreateOffsetScaleList(Vector2 offsetScale)
+    {
+        List<Vector3> offsetScaleList = new List<Vector3>();
+        for (int i = 0; i < componentList.Count; i++)
+        {
+            Vector3 offset = originalScale[i] * offsetScale;
+            offsetScaleList.Add(offset);
+        }
+        return offsetScaleList;
+    }
+
+    private List<Vector3> CreateOffsetRotationList(Vector3 offsetRotation)
+    {
+        List<Vector3> offsetRotationList = new List<Vector3>();
+        for (int i = 0; i < componentList.Count; i++)
+        {
+            Vector3 offset = originalRotation[i] + offsetRotation;
+            offsetRotationList.Add(offset);
+        }
+        return offsetRotationList;
+    }
     #endregion
 
     public enum DelayTimerType

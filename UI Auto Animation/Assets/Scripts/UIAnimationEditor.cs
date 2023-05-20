@@ -3,24 +3,42 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
+/// <summary>
+/// This Editor just displays two buttons to trigger the animation on Play Mode for debugging purposes
+/// </summary>
 #if UNITY_EDITOR
-[CustomEditor(typeof(UIAnimation))]
-public class UIAnimationEditor : Editor
+[CustomEditor(typeof(UIAutoAnimation))]
+public class UIAutoAnimationEditor : Editor
 {
     public override void OnInspectorGUI()
     {
-        UIAnimation uiAnimation = (UIAnimation)target;
+        UIAutoAnimation uiAnimation = (UIAutoAnimation)target;
 
         DrawDefaultInspector();
 
-        if (GUILayout.Button("Entrance Animation"))
-        {
-            uiAnimation.EntranceAnimation();
-        }
 
-        if (GUILayout.Button("Exit Animation"))
+        EditorGUILayout.Space(20);
+        EditorGUI.BeginDisabledGroup(!Application.isPlaying);
         {
-            uiAnimation.ExitAnimation();
+            EditorGUILayout.BeginHorizontal();
+            if (GUILayout.Button("Entrance Animation", GUILayout.Height(40)))
+            {
+                uiAnimation.EntranceAnimation();
+            }
+
+            if (GUILayout.Button("Exit Animation", GUILayout.Height(40)))
+            {
+                uiAnimation.ExitAnimation();
+            }
+            EditorGUILayout.EndHorizontal();
+        }
+        EditorGUI.EndDisabledGroup();
+
+
+        //Hide this message on Play Mode
+        if (!Application.isPlaying)
+        {
+            EditorGUILayout.HelpBox("You must be in Play Mode to press these buttons", MessageType.Info);
         }
     }
 }
