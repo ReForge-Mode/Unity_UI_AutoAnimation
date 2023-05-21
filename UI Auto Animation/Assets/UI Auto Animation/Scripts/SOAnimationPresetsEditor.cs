@@ -8,7 +8,7 @@ using UnityEngine;
 [CustomEditor(typeof(SOAnimationPresets))]
 public class SOAnimationPresetsEditor : Editor
 {
-    private SerializedProperty duration;
+    private SerializedProperty description;
     private SerializedProperty delayPerElement;
 
     private SerializedProperty useAlphaAnimation;
@@ -32,7 +32,7 @@ public class SOAnimationPresetsEditor : Editor
 
     private void OnEnable()
     {
-        duration = serializedObject.FindProperty("duration");
+        description = serializedObject.FindProperty("description");
         delayPerElement = serializedObject.FindProperty("delayPerElement");
 
         useAlphaAnimation = serializedObject.FindProperty("useAlphaAnimation");
@@ -59,10 +59,11 @@ public class SOAnimationPresetsEditor : Editor
     {
         serializedObject.Update();
 
-        duration.floatValue = EditorGUILayout.FloatField("Duration", duration.floatValue);
-        delayPerElement.floatValue = EditorGUILayout.FloatField("Delay Per Element", delayPerElement.floatValue);
+        EditorGUILayout.PropertyField(description);
+        EditorGUILayout.PropertyField(delayPerElement);
+        
 
-
+        //USE ALPHA ANIMATION
         EditorGUILayout.Space(20);
         EditorGUILayout.PropertyField(useAlphaAnimation, new GUIContent("Use Alpha Animation"));
         EditorGUI.BeginDisabledGroup(!useAlphaAnimation.boolValue);
@@ -75,6 +76,7 @@ public class SOAnimationPresetsEditor : Editor
         EditorGUI.EndDisabledGroup();
 
 
+        //USE POSITION ANIMATION
         EditorGUILayout.Space(20);
         EditorGUILayout.PropertyField(usePositionAnimation, new GUIContent("Use Position Animation"));
         EditorGUI.BeginDisabledGroup(!usePositionAnimation.boolValue);
@@ -88,6 +90,7 @@ public class SOAnimationPresetsEditor : Editor
         EditorGUI.EndDisabledGroup();
 
 
+        //USE SCALE ANIMATION
         EditorGUILayout.Space(20);
         EditorGUILayout.PropertyField(useScaleAnimation, new GUIContent("Use Scale Animation"));
         EditorGUI.BeginDisabledGroup(!useScaleAnimation.boolValue);
@@ -101,6 +104,7 @@ public class SOAnimationPresetsEditor : Editor
         EditorGUI.EndDisabledGroup();
 
 
+        //USE ROTATION ANIMATION
         EditorGUILayout.Space(20);
         EditorGUILayout.PropertyField(useRotationAnimation, new GUIContent("Use Rotation Animation"));
         EditorGUI.BeginDisabledGroup(!useRotationAnimation.boolValue);
@@ -113,6 +117,8 @@ public class SOAnimationPresetsEditor : Editor
         }
         EditorGUI.EndDisabledGroup();
 
+
+        //MESSAGE TYPE
         EditorGUILayout.Space(20);
         EditorGUILayout.HelpBox("All Animation Curves must start at value 0 and ends in value 1, " +
                                 "even if it is used for fade out transition. " +

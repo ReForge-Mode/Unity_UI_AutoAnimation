@@ -38,7 +38,7 @@ public class UIAutoAnimationEditor : Editor
         //Hide this message on Play Mode
         if (!Application.isPlaying)
         {
-            EditorGUILayout.HelpBox("You must be in Play Mode to press these buttons", MessageType.Info);
+            EditorGUILayout.HelpBox("You must be in Play Mode to interact with these buttons", MessageType.Info);
         }
     }
 }

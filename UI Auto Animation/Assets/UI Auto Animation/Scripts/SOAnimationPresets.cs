@@ -8,9 +8,8 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Animation 1", menuName = "Scriptable Objects/Animation Preset")]
 public class SOAnimationPresets : ScriptableObject
 {
-    [Tooltip("The duration of each animation in seconds. " +
-             "Set it to zero to make all elements appear without any animation")]
-    public float duration         = 0.5f;    
+    [TextArea]
+    public string description;  
 
     [Tooltip("The delay between each element being animated in seconds. " +
              "Set it to zero to make all elements appear at once")]

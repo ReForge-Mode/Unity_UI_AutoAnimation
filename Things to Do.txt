@@ -1,8 +1,7 @@
 Easing Curves: https://easings.net/
 
 THINGS TO DO
-- Optimization: Only do the checkmarked operation in the editor (Use Transition)
-- Documentation
+- Description
 - Exclude Button Text in Position and Rotation option
 - Alpha background is not set to 1 until the end of the animation
 - Interruptible Fade In/Out Animation

@@ -246,11 +246,6 @@ MonoBehaviour:
   animationEntrancePresets: {fileID: 11400000, guid: 24482176c23feda4da110cb53524688a, type: 2}
   animationExitPresets: {fileID: 11400000, guid: 71a7ea7d195fb47408b98c76d87b75ff, type: 2}
   searchMode: 0
-  componentList: []
-  rectTransformList: []
-  originalAlpha: []
-  originalPosition: []
-  originalScale: []
 --- !u!1 &155516761
 GameObject:
   m_ObjectHideFlags: 0

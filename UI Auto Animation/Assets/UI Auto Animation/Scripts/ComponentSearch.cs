@@ -4,11 +4,16 @@ using UnityEngine;
 using System;
 
 
+/// <summary>
+/// This class contains functions to list specific or multiple components type in the child objects. 
+/// Unlike GetComponentsInChildren, you can define to search them Depth-First or Breadth-First. 
+/// Plus, you can search different types of components in a single list, like UI objects
+/// </summary>
 public static class ComponentSearch
 {
     /// Example on how to use these functions:
     /// var components = ComponentSearch.GetComponentInHierarchy_DepthFirst(transform, typeof(Transform), typeof(Rigidbody), typeof(BoxCollider));
-
+    /// var components = ComponentSearch.GetComponentInHierarchy_DepthFirst(transform, typeof(TextMeshProUGUI), typeof(Image));
 
     /// <summary>
     /// Gets all of the components of the specified types on the current object and its children, in a depth-first traversal.
