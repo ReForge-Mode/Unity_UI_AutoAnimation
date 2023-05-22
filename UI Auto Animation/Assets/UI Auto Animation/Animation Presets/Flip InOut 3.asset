@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 09becc92ca7be05459bdfa3f9c10c5b0, type: 3}
-  m_Name: _Fade Out
+  m_Name: Flip InOut 3
   m_EditorClassIdentifier: 
-  description: 
-  delayPerElement: 0.2
-  useAlphaAnimation: 0
-  alphaDuration: 0.5
+  useAlphaAnimation: 1
+  alphaDelay: 0
+  alphaDuration: 0.4
+  delayPerElementAlpha: 0.2
   curveAlpha:
     serializedVersion: 2
     m_Curve:
@@ -41,8 +41,10 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   usePositionAnimation: 0
-  positionDuration: 0.5
-  offsetPosition: {x: 0, y: 25}
+  positionDelay: 0
+  positionDuration: 0.4
+  delayPerElementPosition: 0.2
+  offsetPosition: {x: -25, y: 0}
   curvePosition:
     serializedVersion: 2
     m_Curve:
@@ -56,6 +58,24 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
+      time: 0.33
+      value: -0.25
+      inSlope: 1.8939394
+      outSlope: 1.8939394
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.66
+      value: 1.25
+      inSlope: 1.9050802
+      outSlope: 1.9050802
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
       time: 1
       value: 1
       inSlope: 0
@@ -68,8 +88,10 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   useScaleAnimation: 0
-  scaleDuration: 0.5
-  offsetScale: {x: 0.75, y: 0.75}
+  scaleDelay: 0
+  scaleDuration: 0.4
+  delayPerElementScale: 0.2
+  offsetScale: {x: 1.25, y: 1.25}
   curveScale:
     serializedVersion: 2
     m_Curve:
@@ -95,8 +117,10 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   useRotationAnimation: 1
-  rotationDuration: 1
-  offsetRotation: {x: 180, y: 0, z: 180}
+  rotationDelay: 0
+  rotationDuration: 0.5
+  delayPerElementRotation: 0.2
+  offsetRotation: {x: 0, y: 90, z: 90}
   curveRotation:
     serializedVersion: 2
     m_Curve:

@@ -102,4 +102,19 @@ public class SOAnimationPresets : ScriptableObject
              "even if it is used for fade out transition. " +
              "It is used as an interpolation, not for setting values")]
     public AnimationCurve curveRotation = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
+
+
+
+    //AT THE END
+    [Tooltip("Trigger the Entrance/Exit Animation again, " +
+             "which can be used to create a looping animation.")]
+    public AutoTrigger autoTrigger = AutoTrigger.DoNothing;
+
+    [Tooltip("The amount of time after the last animation is finished. ")]
+    public float autoTriggerTimer = 5f;
+
+    public enum AutoTrigger
+    {
+        DoNothing, TriggerEntranceAnimation, TriggerExitAnimation
+    }
 }

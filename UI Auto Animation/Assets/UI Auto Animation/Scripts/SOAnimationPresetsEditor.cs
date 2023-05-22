@@ -35,6 +35,9 @@ public class SOAnimationPresetsEditor : Editor
     private SerializedProperty offsetRotation;
     private SerializedProperty curveRotation;
 
+    private SerializedProperty autoTrigger;
+    private SerializedProperty autoTriggerTimer;
+
     private void OnEnable()
     {
         useAlphaAnimation = serializedObject.FindProperty("useAlphaAnimation");
@@ -63,6 +66,9 @@ public class SOAnimationPresetsEditor : Editor
         delayPerElementRotation = serializedObject.FindProperty("delayPerElementRotation");
         offsetRotation = serializedObject.FindProperty("offsetRotation");
         curveRotation = serializedObject.FindProperty("curveRotation");
+
+        autoTrigger = serializedObject.FindProperty("autoTrigger");
+        autoTriggerTimer = serializedObject.FindProperty("autoTriggerTimer");
     }
 
     public override void OnInspectorGUI()
@@ -129,6 +135,17 @@ public class SOAnimationPresetsEditor : Editor
             EditorGUILayout.PropertyField(offsetRotation, new GUIContent("Offset Rotation"));
             EditorGUILayout.PropertyField(curveRotation, new GUIContent("Interpolation Curve"));
             EditorGUI.indentLevel--;
+        }
+        EditorGUI.EndDisabledGroup();
+
+
+        //AUTO-TRIGGER
+        EditorGUILayout.Space(20);
+        EditorGUILayout.LabelField("When the animation is finished...");
+        EditorGUILayout.PropertyField(autoTrigger, new GUIContent(""));
+        EditorGUI.BeginDisabledGroup(autoTrigger.intValue == 0);
+        {
+            EditorGUILayout.PropertyField(autoTriggerTimer, new GUIContent("After Seconds"));
         }
         EditorGUI.EndDisabledGroup();
 

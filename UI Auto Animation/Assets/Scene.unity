@@ -242,11 +242,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7ffeee45352e4843b7e1df525780522, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animationEntrancePresets: {fileID: 11400000, guid: 5b8dc4fe56b7d874ab8a4cc7d6f2b40e, type: 2}
-  animationExitPresets: {fileID: 11400000, guid: a9fa866d1493ce34ab8ce40560dbccc5, type: 2}
+  animationEntrancePresets: {fileID: 11400000, guid: de9bcaba38f368a4db0aff57ba56506d, type: 2}
+  animationExitPresets: {fileID: 11400000, guid: de9bcaba38f368a4db0aff57ba56506d, type: 2}
   searchMode: 0
-  useAutoExit: 0
-  autoExitDelay: 1
 --- !u!1 &155516761
 GameObject:
   m_ObjectHideFlags: 0
@@ -703,8 +701,6 @@ MonoBehaviour:
   animationEntrancePresets: {fileID: 11400000, guid: 24482176c23feda4da110cb53524688a, type: 2}
   animationExitPresets: {fileID: 11400000, guid: 71a7ea7d195fb47408b98c76d87b75ff, type: 2}
   searchMode: 0
-  useAutoExit: 0
-  autoExitDelay: 5
 --- !u!114 &390823272
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 09becc92ca7be05459bdfa3f9c10c5b0, type: 3}
-  m_Name: Appear
+  m_Name: AutoTriggerIn_Yoyo
   m_EditorClassIdentifier: 
   useAlphaAnimation: 1
   alphaDelay: 0
@@ -21,9 +21,9 @@ MonoBehaviour:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
+      value: 0
+      inSlope: 1
+      outSlope: 1
       tangentMode: 34
       weightedMode: 0
       inWeight: 0
@@ -31,8 +31,8 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 0
-      outSlope: 0
+      inSlope: 1
+      outSlope: 1
       tangentMode: 34
       weightedMode: 0
       inWeight: 0
@@ -40,11 +40,11 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  usePositionAnimation: 0
+  usePositionAnimation: 1
   positionDelay: 0
-  positionDuration: 0.5
+  positionDuration: 0.4
   delayPerElementPosition: 0.2
-  offsetPosition: {x: 0, y: 0}
+  offsetPosition: {x: 0, y: -25}
   curvePosition:
     serializedVersion: 2
     m_Curve:
@@ -127,3 +127,5 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  autoTrigger: 2
+  autoTriggerTimer: 1

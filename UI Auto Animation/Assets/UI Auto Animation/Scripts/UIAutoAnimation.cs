@@ -13,12 +13,6 @@ public class UIAutoAnimation : MonoBehaviour
              "SOAnimationPresets's delay per element is bigger than zero")]
     public SearchMode searchMode;
 
-    [Header("Auto-Exit")]
-    public bool useAutoExit = false;        //Once an entry animation is done, wait and then trigger the ExitAnimation
-    public float autoExitDelay = 5f;
-    
-
-
     private List<Component> componentList;
     private RectTransform[] rectTransformList;
     private float[] originalAlpha;
@@ -40,16 +34,7 @@ public class UIAutoAnimation : MonoBehaviour
         StartCoroutine(EntranceScaleEnumeration());
         StartCoroutine(EntranceRotationEnumeration());
 
-        if(useAutoExit == true)
-        {
-            float alphaDuration     = (componentList.Count * animationEntrancePresets.delayPerElementAlpha) + animationEntrancePresets.alphaDuration;
-            float positionDuration  = (componentList.Count * animationEntrancePresets.delayPerElementPosition) + animationEntrancePresets.positionDuration;
-            float scaleDuration     = (componentList.Count * animationEntrancePresets.delayPerElementScale) + animationEntrancePresets.scaleDuration;
-            float rotationDuration  = (componentList.Count * animationEntrancePresets.delayPerElementRotation) + animationEntrancePresets.rotationDuration;
-            float maxEntranceDuration = Mathf.Max(alphaDuration, positionDuration, scaleDuration, rotationDuration);
-
-            Invoke("ExitAnimation", maxEntranceDuration + autoExitDelay);
-        }
+        AutoTriggerCalculation(animationEntrancePresets);
     }
 
     public void ExitAnimation()
@@ -60,6 +45,8 @@ public class UIAutoAnimation : MonoBehaviour
         StartCoroutine(ExitPositionEnumeration());
         StartCoroutine(ExitScaleEnumeration());
         StartCoroutine(ExitRotationEnumeration());
+
+        AutoTriggerCalculation(animationExitPresets);
     }
 
 
@@ -635,6 +622,31 @@ public class UIAutoAnimation : MonoBehaviour
 
             Vector3 rotation = rect.localRotation.eulerAngles;
             originalRotation[i] = rotation;
+        }
+    }
+
+    /// <summary>
+    /// Calculate the AutoTrigger if it's used
+    /// </summary>
+    /// <param name="animationPresets"></param>
+    private void AutoTriggerCalculation(SOAnimationPresets animationPresets)
+    {
+        if (animationPresets.autoTrigger != SOAnimationPresets.AutoTrigger.DoNothing)
+        {
+            float alphaDuration = (componentList.Count * animationPresets.delayPerElementAlpha) + animationPresets.alphaDuration;
+            float positionDuration = (componentList.Count * animationPresets.delayPerElementPosition) + animationPresets.positionDuration;
+            float scaleDuration = (componentList.Count * animationPresets.delayPerElementScale) + animationPresets.scaleDuration;
+            float rotationDuration = (componentList.Count * animationPresets.delayPerElementRotation) + animationPresets.rotationDuration;
+            float maxEntranceDuration = Mathf.Max(alphaDuration, positionDuration, scaleDuration, rotationDuration);
+
+            if (animationPresets.autoTrigger == SOAnimationPresets.AutoTrigger.TriggerExitAnimation)
+            {
+                Invoke("ExitAnimation", maxEntranceDuration + animationPresets.autoTriggerTimer);
+            }
+            else if (animationPresets.autoTrigger == SOAnimationPresets.AutoTrigger.TriggerEntranceAnimation)
+            {
+                Invoke("EntranceAnimation", maxEntranceDuration + animationPresets.autoTriggerTimer);
+            }
         }
     }
 
