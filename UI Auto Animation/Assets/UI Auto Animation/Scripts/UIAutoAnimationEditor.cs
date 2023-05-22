@@ -35,6 +35,8 @@ public class UIAutoAnimationEditor : Editor
         EditorGUI.EndDisabledGroup();
 
 
+
+
         //Hide this message on Play Mode
         if (!Application.isPlaying)
         {

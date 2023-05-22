@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 09becc92ca7be05459bdfa3f9c10c5b0, type: 3}
-  m_Name: Animation Float Fade In 1
+  m_Name: _Fade Out
   m_EditorClassIdentifier: 
-  description: 'Besyhsdj '
-  delayPerElement: 0
-  useAlphaAnimation: 1
+  description: 
+  delayPerElement: 0.2
+  useAlphaAnimation: 0
   alphaDuration: 0.5
   curveAlpha:
     serializedVersion: 2
@@ -67,9 +67,9 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  useScaleAnimation: 1
-  scaleDuration: 5
-  offsetScale: {x: 0.5, y: 0.5}
+  useScaleAnimation: 0
+  scaleDuration: 0.5
+  offsetScale: {x: 0.75, y: 0.75}
   curveScale:
     serializedVersion: 2
     m_Curve:
@@ -94,9 +94,9 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  useRotationAnimation: 0
-  rotationDuration: 5
-  offsetRotation: {x: 0, y: 0, z: 15}
+  useRotationAnimation: 1
+  rotationDuration: 1
+  offsetRotation: {x: 180, y: 0, z: 180}
   curveRotation:
     serializedVersion: 2
     m_Curve:

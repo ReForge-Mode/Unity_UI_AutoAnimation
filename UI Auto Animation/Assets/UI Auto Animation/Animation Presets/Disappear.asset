@@ -10,20 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 09becc92ca7be05459bdfa3f9c10c5b0, type: 3}
-  m_Name: Animation Float Fade In
+  m_Name: Disappear
   m_EditorClassIdentifier: 
-  description: 'Besyhsdj '
-  delayPerElement: 0.2
   useAlphaAnimation: 1
-  alphaDuration: 0.5
+  alphaDelay: 0
+  alphaDuration: 0.4
+  delayPerElementAlpha: 0.2
   curveAlpha:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
-      inSlope: 1
-      outSlope: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
       tangentMode: 34
       weightedMode: 0
       inWeight: 0
@@ -31,8 +31,8 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 1
-      outSlope: 1
+      inSlope: 0
+      outSlope: 0
       tangentMode: 34
       weightedMode: 0
       inWeight: 0
@@ -41,8 +41,10 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   usePositionAnimation: 0
+  positionDelay: 0
   positionDuration: 0.5
-  offsetPosition: {x: 0, y: 25}
+  delayPerElementPosition: 0.2
+  offsetPosition: {x: 0, y: 0}
   curvePosition:
     serializedVersion: 2
     m_Curve:
@@ -68,8 +70,10 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   useScaleAnimation: 0
+  scaleDelay: 0
   scaleDuration: 0.5
-  offsetScale: {x: 1.2, y: 1.2}
+  delayPerElementScale: 0.2
+  offsetScale: {x: 1, y: 1}
   curveScale:
     serializedVersion: 2
     m_Curve:
@@ -94,9 +98,11 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  useRotationAnimation: 1
+  useRotationAnimation: 0
+  rotationDelay: 0
   rotationDuration: 0.5
-  offsetRotation: {x: 180, y: 0, z: 0}
+  delayPerElementRotation: 0.2
+  offsetRotation: {x: 0, y: 0, z: 0}
   curveRotation:
     serializedVersion: 2
     m_Curve:

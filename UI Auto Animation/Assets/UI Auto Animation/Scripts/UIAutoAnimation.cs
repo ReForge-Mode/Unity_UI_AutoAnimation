@@ -13,12 +13,18 @@ public class UIAutoAnimation : MonoBehaviour
              "SOAnimationPresets's delay per element is bigger than zero")]
     public SearchMode searchMode;
 
+    [Header("Auto-Exit")]
+    public bool useAutoExit = false;        //Once an entry animation is done, wait and then trigger the ExitAnimation
+    public float autoExitDelay = 5f;
+    
+
+
     private List<Component> componentList;
-    private List<RectTransform> rectTransformList;
-    private List<float> originalAlpha;
-    private List<Vector2> originalPosition;
-    private List<Vector3> originalScale;
-    private List<Vector3> originalRotation;
+    private RectTransform[] rectTransformList;
+    private float[] originalAlpha;
+    private Vector2[] originalPosition;
+    private Vector3[] originalScale;
+    private Vector3[] originalRotation;
 
     public void Awake()
     {
@@ -33,6 +39,17 @@ public class UIAutoAnimation : MonoBehaviour
         StartCoroutine(EntrancePositionEnumeration());
         StartCoroutine(EntranceScaleEnumeration());
         StartCoroutine(EntranceRotationEnumeration());
+
+        if(useAutoExit == true)
+        {
+            float alphaDuration     = (componentList.Count * animationEntrancePresets.delayPerElementAlpha) + animationEntrancePresets.alphaDuration;
+            float positionDuration  = (componentList.Count * animationEntrancePresets.delayPerElementPosition) + animationEntrancePresets.positionDuration;
+            float scaleDuration     = (componentList.Count * animationEntrancePresets.delayPerElementScale) + animationEntrancePresets.scaleDuration;
+            float rotationDuration  = (componentList.Count * animationEntrancePresets.delayPerElementRotation) + animationEntrancePresets.rotationDuration;
+            float maxEntranceDuration = Mathf.Max(alphaDuration, positionDuration, scaleDuration, rotationDuration);
+
+            Invoke("ExitAnimation", maxEntranceDuration + autoExitDelay);
+        }
     }
 
     public void ExitAnimation()
@@ -54,10 +71,13 @@ public class UIAutoAnimation : MonoBehaviour
             /// Set starting state where the UI is invisible
             SetAllColorAlpha_Zero();
 
+            /// Delay the animation
+            yield return new WaitForSeconds(animationEntrancePresets.alphaDelay);
+
             /// Calculate delay per element
             /// The top-most UI on the list gets 0 second delay.
             /// Each subsequent element gets delayed by the amount.
-            float[] delayTimer = CalculateDelayTimer(DelayTimerType.TopToBottom, animationEntrancePresets);
+            float[] delayPerItem = CalculateDelayPerItem(delayPerItemType.TopToBottom, animationEntrancePresets.delayPerElementAlpha);
 
             /// Keep track of the time for each UI on the list
             /// because each UI has a different starting time based on the delay
@@ -69,12 +89,17 @@ public class UIAutoAnimation : MonoBehaviour
                 for (int i = 0; i < componentList.Count; i++)
                 {
                     //Don't do anything when the animation for this item is already finished.
-                    if (elapsedTime[i] > animationEntrancePresets.alphaDuration) continue;
+                    if (elapsedTime[i] >= animationEntrancePresets.alphaDuration)
+                    {
+                        //Set its final state
+                        SetColorAlpha(componentList[i], originalAlpha[i]);
+                        continue;
+                    }
 
                     //Don't do anything until the delay timer reaches 0
-                    if (delayTimer[i] > 0f)
+                    if (delayPerItem[i] > 0f)
                     {
-                        delayTimer[i] -= Time.deltaTime;
+                        delayPerItem[i] -= Time.deltaTime;
                         continue;
                     }
 
@@ -91,11 +116,11 @@ public class UIAutoAnimation : MonoBehaviour
                 }
                 yield return null;
             }
-
-            //There are always inaccuracies when dealing with float values
-            //So to keep it safe, when the final loop is done, set everything to its final state.
-            SetAllColorAlpha_Original();
         }
+
+        //There are always inaccuracies when dealing with float values
+        //So to keep it safe, when the final loop is done, set everything to its final state.
+        SetAllColorAlpha_Original();
     }
 
     private IEnumerator ExitAlphaEnumeration()
@@ -105,10 +130,13 @@ public class UIAutoAnimation : MonoBehaviour
             /// Set starting state where the UI is invisible
             SetAllColorAlpha_Original();
 
+            /// Delay the animation
+            yield return new WaitForSeconds(animationExitPresets.alphaDelay);
+
             /// Calculate delay per element
             /// The bottom-most UI on the list gets 0 second delay.
             /// Each subsequent element gets delayed by the amount.
-            float[] delayTimer = CalculateDelayTimer(DelayTimerType.BottomToTop, animationExitPresets);
+            float[] delayPerItem = CalculateDelayPerItem(delayPerItemType.BottomToTop, animationExitPresets.delayPerElementAlpha);
 
             /// Keep track of the time for each UI on the list
             /// because each UI has a different starting time based on the delay
@@ -120,12 +148,17 @@ public class UIAutoAnimation : MonoBehaviour
                 for (int i = 0; i < componentList.Count; i++)
                 {
                     //Don't do anything when the animation for this item is already finished.
-                    if (elapsedTime[i] > animationExitPresets.alphaDuration) continue;
+                    if (elapsedTime[i] > animationExitPresets.alphaDuration)
+                    {
+                        //Set its final state
+                        SetColorAlpha(componentList[i], 0);
+                        continue;
+                    }
 
                     //Don't do anything until the delay timer reaches 0
-                    if (delayTimer[i] > 0f)
+                    if (delayPerItem[i] > 0f)
                     {
-                        delayTimer[i] -= Time.deltaTime;
+                        delayPerItem[i] -= Time.deltaTime;
                         continue;
                     }
 
@@ -152,15 +185,19 @@ public class UIAutoAnimation : MonoBehaviour
     {
         if (componentList.Count > 0 && animationEntrancePresets.usePositionAnimation == true)
         {
-            Vector2[] offsetPositionList = CreateOffsetPositionList(animationEntrancePresets);
-
             /// Set starting state where the UI is invisible
-            SetAllPosition_Offset(offsetPositionList);
+            SetAllPosition_Offset(animationEntrancePresets);
+
+            /// Delay the animation
+            yield return new WaitForSeconds(animationEntrancePresets.positionDelay);
+
+
+            Vector2[] offsetPositionList = CreateOffsetPositionList(animationEntrancePresets);
 
             /// Calculate delay per element
             /// The top-most UI on the list gets 0 second delay.
             /// Each subsequent element gets delayed by the amount.
-            float[] delayTimer = CalculateDelayTimer(DelayTimerType.TopToBottom, animationEntrancePresets);
+            float[] delayPerItem = CalculateDelayPerItem(delayPerItemType.TopToBottom, animationEntrancePresets.delayPerElementPosition);
 
             /// Keep track of the time for each UI on the list
             /// because each UI has a different starting time based on the delay
@@ -172,12 +209,17 @@ public class UIAutoAnimation : MonoBehaviour
                 for (int i = 0; i < componentList.Count; i++)
                 {
                     //Don't do anything when the animation for this item is already finished.
-                    if (elapsedTime[i] > animationEntrancePresets.positionDuration) continue;
+                    if (elapsedTime[i] > animationEntrancePresets.positionDuration)
+                    {
+                        //Set its final state
+                        SetPosition(rectTransformList[i], originalPosition[i]);
+                        continue;
+                    }
 
                     //Don't do anything until the delay timer reaches 0
-                    if (delayTimer[i] > 0f)
+                    if (delayPerItem[i] > 0f)
                     {
-                        delayTimer[i] -= Time.deltaTime;
+                        delayPerItem[i] -= Time.deltaTime;
                         continue;
                     }
 
@@ -194,26 +236,30 @@ public class UIAutoAnimation : MonoBehaviour
                 }
                 yield return null;
             }
-
-            //There are always inaccuracies when dealing with float values
-            //So to keep it safe, when the final loop is done, set everything to its final state.
-            SetAllPosition_Original();
         }
+
+        //There are always inaccuracies when dealing with float values
+        //So to keep it safe, when the final loop is done, set everything to its final state.
+        SetAllPosition_Original();
     }
 
     private IEnumerator ExitPositionEnumeration()
     {
         if (componentList.Count > 0 && animationExitPresets.usePositionAnimation == true)
         {
-            Vector2[] offsetPositionList = CreateOffsetPositionList(animationExitPresets);
-
             /// Set starting state where the UI is invisible
             SetAllPosition_Original();
+
+            /// Delay the animation
+            yield return new WaitForSeconds(animationExitPresets.positionDelay);
+
+
+            Vector2[] offsetPositionList = CreateOffsetPositionList(animationExitPresets);
 
             /// Calculate delay per element
             /// The bottom-most UI on the list gets 0 second delay.
             /// Each subsequent element gets delayed by the amount.
-            float[] delayTimer = CalculateDelayTimer(DelayTimerType.BottomToTop, animationExitPresets);
+            float[] delayPerItem = CalculateDelayPerItem(delayPerItemType.BottomToTop, animationExitPresets.delayPerElementPosition);
 
             /// Keep track of the time for each UI on the list
             /// because each UI has a different starting time based on the delay
@@ -225,12 +271,17 @@ public class UIAutoAnimation : MonoBehaviour
                 for (int i = 0; i < componentList.Count; i++)
                 {
                     //Don't do anything when the animation for this item is already finished.
-                    if (elapsedTime[i] > animationExitPresets.positionDuration) continue;
+                    if (elapsedTime[i] > animationExitPresets.positionDuration)
+                    {
+                        //Set its final state
+                        SetPosition(rectTransformList[i], offsetPositionList[i]);
+                        continue;
+                    }
 
                     //Don't do anything until the delay timer reaches 0
-                    if (delayTimer[i] > 0f)
+                    if (delayPerItem[i] > 0f)
                     {
-                        delayTimer[i] -= Time.deltaTime;
+                        delayPerItem[i] -= Time.deltaTime;
                         continue;
                     }
 
@@ -249,7 +300,7 @@ public class UIAutoAnimation : MonoBehaviour
 
             //There are always inaccuracies when dealing with float values
             //So to keep it safe, when the final loop is done, set everything to its final state.
-            SetAllPosition_Offset(offsetPositionList);
+            SetAllPosition_Offset(animationExitPresets);
         }
     }
 
@@ -257,15 +308,19 @@ public class UIAutoAnimation : MonoBehaviour
     {
         if (componentList.Count > 0 && animationEntrancePresets.useScaleAnimation == true)
         {
-            Vector3[] offsetScaleList = CreateOffsetScaleList(animationEntrancePresets);
-
             /// Set starting state where the UI is invisible
-            SetAllScale_Offset(offsetScaleList);
+            SetAllScale_Offset(animationEntrancePresets);
+
+            /// Delay the animation
+            yield return new WaitForSeconds(animationEntrancePresets.scaleDelay);
+
+
+            Vector3[] offsetScaleList = CreateOffsetScaleList(animationEntrancePresets);
 
             /// Calculate delay per element
             /// The top-most UI on the list gets 0 second delay.
             /// Each subsequent element gets delayed by the amount.
-            float[] delayTimer = CalculateDelayTimer(DelayTimerType.TopToBottom, animationEntrancePresets);
+            float[] delayPerItem = CalculateDelayPerItem(delayPerItemType.TopToBottom, animationEntrancePresets.delayPerElementScale);
 
             /// Keep track of the time for each UI on the list
             /// because each UI has a different starting time based on the delay
@@ -277,12 +332,17 @@ public class UIAutoAnimation : MonoBehaviour
                 for (int i = 0; i < componentList.Count; i++)
                 {
                     //Don't do anything when the animation for this item is already finished.
-                    if (elapsedTime[i] > animationEntrancePresets.scaleDuration) continue;
+                    if (elapsedTime[i] > animationEntrancePresets.scaleDuration)
+                    {
+                        //Set its final state
+                        SetScale(rectTransformList[i], originalScale[i]);
+                        continue;
+                    }
 
                     //Don't do anything until the delay timer reaches 0
-                    if (delayTimer[i] > 0f)
+                    if (delayPerItem[i] > 0f)
                     {
-                        delayTimer[i] -= Time.deltaTime;
+                        delayPerItem[i] -= Time.deltaTime;
                         continue;
                     }
 
@@ -299,26 +359,30 @@ public class UIAutoAnimation : MonoBehaviour
                 }
                 yield return null;
             }
-
-            //There are always inaccuracies when dealing with float values
-            //So to keep it safe, when the final loop is done, set everything to its final state.
-            SetAllScale_Original();
         }
+
+        //There are always inaccuracies when dealing with float values
+        //So to keep it safe, when the final loop is done, set everything to its final state.
+        SetAllScale_Original();
     }
 
     private IEnumerator ExitScaleEnumeration()
     {
         if (componentList.Count > 0 && animationExitPresets.useScaleAnimation == true)
         {
-            Vector3[] offsetScaleList = CreateOffsetScaleList(animationExitPresets);
-
             /// Set starting state where the UI is invisible
             SetAllScale_Original();
+
+            /// Delay the animation
+            yield return new WaitForSeconds(animationExitPresets.scaleDelay);
+
+
+            Vector3[] offsetScaleList = CreateOffsetScaleList(animationExitPresets);
 
             /// Calculate delay per element
             /// The bottom-most UI on the list gets 0 second delay.
             /// Each subsequent element gets delayed by the amount.
-            float[] delayTimer = CalculateDelayTimer(DelayTimerType.BottomToTop, animationExitPresets);
+            float[] delayPerItem = CalculateDelayPerItem(delayPerItemType.BottomToTop, animationExitPresets.delayPerElementScale);
 
             /// Keep track of the time for each UI on the list
             /// because each UI has a different starting time based on the delay
@@ -330,12 +394,17 @@ public class UIAutoAnimation : MonoBehaviour
                 for (int i = 0; i < componentList.Count; i++)
                 {
                     //Don't do anything when the animation for this item is already finished.
-                    if (elapsedTime[i] > animationExitPresets.scaleDuration) continue;
+                    if (elapsedTime[i] > animationExitPresets.scaleDuration)
+                    {
+                        //Set its final state
+                        SetScale(rectTransformList[i], offsetScaleList[i]);
+                        continue;
+                    }
 
                     //Don't do anything until the delay timer reaches 0
-                    if (delayTimer[i] > 0f)
+                    if (delayPerItem[i] > 0f)
                     {
-                        delayTimer[i] -= Time.deltaTime;
+                        delayPerItem[i] -= Time.deltaTime;
                         continue;
                     }
 
@@ -354,7 +423,7 @@ public class UIAutoAnimation : MonoBehaviour
 
             //There are always inaccuracies when dealing with float values
             //So to keep it safe, when the final loop is done, set everything to its final state.
-            SetAllScale_Offset(offsetScaleList);
+            SetAllScale_Offset(animationExitPresets);
         }
     }
 
@@ -362,15 +431,19 @@ public class UIAutoAnimation : MonoBehaviour
     {
         if (componentList.Count > 0 && animationEntrancePresets.useRotationAnimation == true)
         {
-            Vector3[] offsetRotationList = CreateOffsetRotationList(animationEntrancePresets);
-
             /// Set starting state where the UI is invisible
-            SetAllRotation_Offset(offsetRotationList);
+            SetAllRotation_Offset(animationEntrancePresets);
+
+            /// Delay the animation
+            yield return new WaitForSeconds(animationEntrancePresets.rotationDelay);
+
+
+            Vector3[] offsetRotationList = CreateOffsetRotationList(animationEntrancePresets);
 
             /// Calculate delay per element
             /// The top-most UI on the list gets 0 second delay.
             /// Each subsequent element gets delayed by the amount.
-            float[] delayTimer = CalculateDelayTimer(DelayTimerType.TopToBottom, animationEntrancePresets);
+            float[] delayPerItem = CalculateDelayPerItem(delayPerItemType.TopToBottom, animationEntrancePresets.delayPerElementRotation);
 
             /// Keep track of the time for each UI on the list
             /// because each UI has a different starting time based on the delay
@@ -382,12 +455,17 @@ public class UIAutoAnimation : MonoBehaviour
                 for (int i = 0; i < componentList.Count; i++)
                 {
                     //Don't do anything when the animation for this item is already finished.
-                    if (elapsedTime[i] > animationEntrancePresets.rotationDuration) continue;
+                    if (elapsedTime[i] > animationEntrancePresets.rotationDuration)
+                    {
+                        //Set its final state
+                        SetRotation(rectTransformList[i], originalRotation[i]);
+                        continue;
+                    }
 
                     //Don't do anything until the delay timer reaches 0
-                    if (delayTimer[i] > 0f)
+                    if (delayPerItem[i] > 0f)
                     {
-                        delayTimer[i] -= Time.deltaTime;
+                        delayPerItem[i] -= Time.deltaTime;
                         continue;
                     }
 
@@ -404,26 +482,31 @@ public class UIAutoAnimation : MonoBehaviour
                 }
                 yield return null;
             }
-
-            //There are always inaccuracies when dealing with float values
-            //So to keep it safe, when the final loop is done, set everything to its final state.
-            SetAllRotation_Original();
         }
+
+        //There are always inaccuracies when dealing with float values
+        //So to keep it safe, when the final loop is done, set everything to its final state.
+        SetAllRotation_Original();
     }
 
     private IEnumerator ExitRotationEnumeration()
     {
         if (componentList.Count > 0 && animationExitPresets.useRotationAnimation == true)
         {
-            Vector3[] offsetRotationList = CreateOffsetRotationList(animationExitPresets);
-
             /// Set starting state where the UI is invisible
             SetAllRotation_Original();
+
+            /// Delay the animation
+            yield return new WaitForSeconds(animationExitPresets.rotationDelay);
+
+
+
+            Vector3[] offsetRotationList = CreateOffsetRotationList(animationExitPresets);
 
             /// Calculate delay per element
             /// The bottom-most UI on the list gets 0 second delay.
             /// Each subsequent element gets delayed by the amount.
-            float[] delayTimer = CalculateDelayTimer(DelayTimerType.BottomToTop, animationExitPresets);
+            float[] delayPerItem = CalculateDelayPerItem(delayPerItemType.BottomToTop, animationExitPresets.delayPerElementRotation);
 
             /// Keep track of the time for each UI on the list
             /// because each UI has a different starting time based on the delay
@@ -435,12 +518,17 @@ public class UIAutoAnimation : MonoBehaviour
                 for (int i = 0; i < componentList.Count; i++)
                 {
                     //Don't do anything when the animation for this item is already finished.
-                    if (elapsedTime[i] > animationExitPresets.rotationDuration) continue;
+                    if (elapsedTime[i] > animationExitPresets.rotationDuration)
+                    {
+                        //Set its final state
+                        SetRotation(rectTransformList[i], offsetRotationList[i]);
+                        continue;
+                    }
 
                     //Don't do anything until the delay timer reaches 0
-                    if (delayTimer[i] > 0f)
+                    if (delayPerItem[i] > 0f)
                     {
-                        delayTimer[i] -= Time.deltaTime;
+                        delayPerItem[i] -= Time.deltaTime;
                         continue;
                     }
 
@@ -459,7 +547,7 @@ public class UIAutoAnimation : MonoBehaviour
 
             //There are always inaccuracies when dealing with float values
             //So to keep it safe, when the final loop is done, set everything to its final state.
-            SetAllRotation_Offset(offsetRotationList);
+            SetAllRotation_Offset(animationExitPresets);
         }
     }
     #endregion
@@ -513,40 +601,40 @@ public class UIAutoAnimation : MonoBehaviour
         }
 
         //Get their initial alpha transparency
-        originalAlpha = new List<float>();
+        originalAlpha = new float[componentList.Count];
         for (int i = 0; i < componentList.Count; i++)
         {
             if (componentList[i] is TextMeshProUGUI)
             {
                 float alpha = ((TextMeshProUGUI)componentList[i]).alpha;
-                originalAlpha.Add(alpha);
+                originalAlpha[i] = alpha;
             }
             else if (componentList[i] is Image)
             {
                 float alpha = ((Image)componentList[i]).color.a;
-                originalAlpha.Add(alpha);
+                originalAlpha[i] = alpha;
             }
         }
 
         //Get their initial rectTransform, position, scale, and rotation
-        rectTransformList = new List<RectTransform>();
-        originalPosition = new List<Vector2>();
-        originalScale = new List<Vector3>();
-        originalRotation = new List<Vector3>();
+        rectTransformList = new RectTransform[componentList.Count];
+        originalPosition = new Vector2[componentList.Count];
+        originalScale = new Vector3[componentList.Count];
+        originalRotation = new Vector3[componentList.Count];
 
         for (int i = 0; i < componentList.Count; i++)
         {
             RectTransform rect = componentList[i].GetComponent<RectTransform>();
-            rectTransformList.Add(rect);
+            rectTransformList[i] = rect;
 
-            Vector2 position = rect.anchoredPosition;
-            originalPosition.Add(position);
+            Vector2 position = rect.localPosition;
+            originalPosition[i] = position;
 
             Vector3 scale = rect.localScale;
-            originalScale.Add(scale);
+            originalScale[i] = scale;
 
             Vector3 rotation = rect.localRotation.eulerAngles;
-            originalRotation.Add(rotation);
+            originalRotation[i] = rotation;
         }
     }
 
@@ -554,23 +642,23 @@ public class UIAutoAnimation : MonoBehaviour
     /// Returns a list of timing for each element in the list,
     /// based on the animation presets scriptable object.
     /// </summary>
-    /// <param name="delayTimerType">TopToBottom is used in entrance animation. BottomToTop is used in exit animation</param>
+    /// <param name="delayPerItemType">TopToBottom is used in entrance animation. BottomToTop is used in exit animation</param>
     /// <param name="animationPresets">Specify to get the delayPerElement value from entrance or exit presets</param>
-    /// <returns>Array of delayTimer to count the animation delay in each element on the list</returns>
-    private float[] CalculateDelayTimer(DelayTimerType delayTimerType, SOAnimationPresets animationPresets)
+    /// <returns>Array of delayPerItem to count the animation delay in each element on the list</returns>
+    private float[] CalculateDelayPerItem(delayPerItemType delayPerItemType, float delayPerElement)
     {
-        float[] delayTimer = new float[componentList.Count];
+        float[] delayPerItem = new float[componentList.Count];
         for (int i = 0; i < componentList.Count; i++)
         {
             //For "Top to Bottom" used in Entrance Animation, it gives the first item on the list
-            //value timer 0 second, and increment each item by delayTimer in the AnimationPresets.
+            //value timer 0 second, and increment each item by delayPerItem in the AnimationPresets.
             //For "Bottom to Top" used in Exit Animation, it does the opposite, where the last item is given 0
             //and increment each item backwards.
 
-            int increment = (delayTimerType == DelayTimerType.TopToBottom) ? i : (componentList.Count - 1 - i);
-            delayTimer[i] = animationPresets.delayPerElement * increment;
+            int increment = (delayPerItemType == delayPerItemType.TopToBottom) ? i : (componentList.Count - 1 - i);
+            delayPerItem[i] = delayPerElement * increment;
         }
-        return delayTimer;
+        return delayPerItem;
     }
 
     /// <summary>
@@ -626,13 +714,13 @@ public class UIAutoAnimation : MonoBehaviour
     }
 
     /// <summary>
-    /// Helper function to set the position of rectTransform without ever seeing rect.anchoredPosition
+    /// Helper function to set the position of rectTransform without ever seeing rect.localPosition
     /// </summary>
     /// <param name="rect"></param>
     /// <param name="value"></param>
     private void SetPosition(RectTransform rect, Vector2 value)
     {
-        rect.anchoredPosition = value;
+        rect.localPosition = value;
     }
 
     /// <summary>
@@ -641,9 +729,9 @@ public class UIAutoAnimation : MonoBehaviour
     /// </summary>
     private void SetAllPosition_Original()
     {
-        if (rectTransformList.Count > 0)
+        if (rectTransformList.Length > 0)
         {
-            for (int i = 0; i < rectTransformList.Count; i++)
+            for (int i = 0; i < rectTransformList.Length; i++)
             {
                 SetPosition(rectTransformList[i], originalPosition[i]);
             }
@@ -654,11 +742,12 @@ public class UIAutoAnimation : MonoBehaviour
     /// Set all components' position to its animation-ready offset position. 
     /// This is used at the start of the entrance animation and at the end of exit animation.
     /// </summary>
-    private void SetAllPosition_Offset(Vector2[] offsetPositionList)
+    public void SetAllPosition_Offset(SOAnimationPresets animationPresets)
     {
-        if (rectTransformList.Count > 0)
+        if (rectTransformList.Length > 0)
         {
-            for (int i = 0; i < rectTransformList.Count; i++)
+            Vector2[] offsetPositionList = CreateOffsetPositionList(animationPresets);
+            for (int i = 0; i < rectTransformList.Length; i++)
             {
                 SetPosition(rectTransformList[i], offsetPositionList[i]);
             }
@@ -681,9 +770,9 @@ public class UIAutoAnimation : MonoBehaviour
     /// </summary>
     private void SetAllScale_Original()
     {
-        if (rectTransformList.Count > 0)
+        if (rectTransformList.Length > 0)
         {
-            for (int i = 0; i < rectTransformList.Count; i++)
+            for (int i = 0; i < rectTransformList.Length; i++)
             {
                 SetScale(rectTransformList[i], originalScale[i]);
             }
@@ -695,11 +784,12 @@ public class UIAutoAnimation : MonoBehaviour
     /// This is used at the start of the entrance animation and at the end of exit animation. 
     /// </summary>
     /// <param name="offsetScaleList"></param>
-    private void SetAllScale_Offset(Vector3[] offsetScaleList)
+    private void SetAllScale_Offset(SOAnimationPresets animationPresets)
     {
-        if (rectTransformList.Count > 0)
+        if (rectTransformList.Length > 0)
         {
-            for (int i = 0; i < rectTransformList.Count; i++)
+            Vector3[] offsetScaleList = CreateOffsetScaleList(animationPresets);
+            for (int i = 0; i < rectTransformList.Length; i++)
             {
                 SetScale(rectTransformList[i], offsetScaleList[i]);
             }
@@ -723,9 +813,9 @@ public class UIAutoAnimation : MonoBehaviour
     /// </summary>
     private void SetAllRotation_Original()
     {
-        if (rectTransformList.Count > 0)
+        if (rectTransformList.Length > 0)
         {
-            for (int i = 0; i < rectTransformList.Count; i++)
+            for (int i = 0; i < rectTransformList.Length; i++)
             {
                 SetRotation(rectTransformList[i], originalRotation[i]);
             }
@@ -737,11 +827,12 @@ public class UIAutoAnimation : MonoBehaviour
     /// This is used at the start of the entrance animation and at the end of exit animation. 
     /// </summary>
     /// <param name="offsetRotationList"></param>
-    private void SetAllRotation_Offset(Vector3[] offsetRotationList)
+    private void SetAllRotation_Offset(SOAnimationPresets animationPresets)
     {
-        if (rectTransformList.Count > 0)
+        if (rectTransformList.Length > 0)
         {
-            for (int i = 0; i < rectTransformList.Count; i++)
+            Vector3[] offsetRotationList = CreateOffsetRotationList(animationPresets);
+            for (int i = 0; i < rectTransformList.Length; i++)
             {
                 SetRotation(rectTransformList[i], offsetRotationList[i]);
             }
@@ -760,8 +851,7 @@ public class UIAutoAnimation : MonoBehaviour
         Vector2[] offsetPositionList = new Vector2[componentList.Count];
         for (int i = 0; i < componentList.Count; i++)
         {
-            Vector2 currentPosition = rectTransformList[i].anchoredPosition;
-            Vector2 offset = currentPosition + animationPresets.offsetPosition;
+            Vector2 offset = originalPosition[i] + animationPresets.offsetPosition;
             offsetPositionList[i] = offset;
         }
         return offsetPositionList;
@@ -806,10 +896,10 @@ public class UIAutoAnimation : MonoBehaviour
 
 
     /// <summary>
-    /// The iteration type when defining the delayTimer. 
+    /// The iteration type when defining the delayPerItem. 
     /// TopToBottom is used in entrance animation. BottomToTop is used in exit animation
     /// </summary>
-    public enum DelayTimerType
+    public enum delayPerItemType
     {
         TopToBottom, BottomToTop
     }
