@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 09becc92ca7be05459bdfa3f9c10c5b0, type: 3}
-  m_Name: _Slow Fade InOut
+  m_Name: Cubic Easing
   m_EditorClassIdentifier: 
   useAlphaAnimation: 1
   alphaDelay: 0
-  alphaDuration: 1
-  delayPerElementAlpha: 0
+  alphaDuration: 0.4
+  delayPerElementAlpha: 0.2
   curveAlpha:
     serializedVersion: 2
     m_Curve:
@@ -40,7 +40,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  usePositionAnimation: 0
+  usePositionAnimation: 1
   positionDelay: 0
   positionDuration: 0.4
   delayPerElementPosition: 0.2
@@ -87,11 +87,11 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  useScaleAnimation: 1
+  useScaleAnimation: 0
   scaleDelay: 0
-  scaleDuration: 5
+  scaleDuration: 1
   delayPerElementScale: 0.2
-  offsetScale: {x: 0.75, y: 0.75}
+  offsetScale: {x: 1.5, y: 1.5}
   curveScale:
     serializedVersion: 2
     m_Curve:
@@ -104,6 +104,24 @@ MonoBehaviour:
       weightedMode: 0
       inWeight: 0
       outWeight: 0
+    - serializedVersion: 3
+      time: 0.33
+      value: -0.25
+      inSlope: 1.8939394
+      outSlope: 1.8939394
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.66
+      value: 1.25
+      inSlope: 1.9050802
+      outSlope: 1.9050802
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
     - serializedVersion: 3
       time: 1
       value: 1
@@ -145,3 +163,5 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  autoTrigger: 0
+  autoTriggerTimer: 5

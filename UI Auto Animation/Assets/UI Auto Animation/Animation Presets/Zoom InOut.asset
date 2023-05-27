@@ -116,7 +116,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  useRotationAnimation: 0
+  useRotationAnimation: 1
   rotationDelay: 0
   rotationDuration: 0.5
   delayPerElementRotation: 0.2
@@ -145,3 +145,5 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  autoTrigger: 0
+  autoTriggerTimer: 5

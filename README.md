@@ -1,9 +1,5 @@
-# VRoid Character Customization in Unity
+# UI Auto Animation
 A lot of people has been asking for character customization of VRoid models in Unity. Here's how you do it!
-
-Huge credit to these guys who made this possible!
-- UniVRM plugin: https://github.com/vrm-c/UniVRM
-- VRoid Free Model: https://hub.vroid.com/en/users/36144806
 
 <p align="center"><img src="https://github.com/FFaUniHan/Unity_VRoid_Character_Customization/blob/main/Demo.gif" width=60% height=60%></p>
 

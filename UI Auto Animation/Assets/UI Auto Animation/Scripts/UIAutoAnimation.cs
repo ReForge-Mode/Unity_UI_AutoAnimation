@@ -3,15 +3,12 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class UIAutoAnimation : MonoBehaviour
 {
     public SOAnimationPresets animationEntrancePresets;     
     public SOAnimationPresets animationExitPresets;
-
-    [Tooltip("Determines the order of the items shown when " +
-             "SOAnimationPresets's delay per element is bigger than zero")]
-    public SearchMode searchMode;
 
     private List<Component> componentList;
     private RectTransform[] rectTransformList;
@@ -64,7 +61,7 @@ public class UIAutoAnimation : MonoBehaviour
             /// Calculate delay per element
             /// The top-most UI on the list gets 0 second delay.
             /// Each subsequent element gets delayed by the amount.
-            float[] delayPerItem = CalculateDelayPerItem(delayPerItemType.TopToBottom, animationEntrancePresets.delayPerElementAlpha);
+            float[] delayPerItem = CalculateDelayPerItem(DelayPerItemType.TopToBottom, animationEntrancePresets.delayPerElementAlpha);
 
             /// Keep track of the time for each UI on the list
             /// because each UI has a different starting time based on the delay
@@ -123,7 +120,7 @@ public class UIAutoAnimation : MonoBehaviour
             /// Calculate delay per element
             /// The bottom-most UI on the list gets 0 second delay.
             /// Each subsequent element gets delayed by the amount.
-            float[] delayPerItem = CalculateDelayPerItem(delayPerItemType.BottomToTop, animationExitPresets.delayPerElementAlpha);
+            float[] delayPerItem = CalculateDelayPerItem(DelayPerItemType.BottomToTop, animationExitPresets.delayPerElementAlpha);
 
             /// Keep track of the time for each UI on the list
             /// because each UI has a different starting time based on the delay
@@ -184,7 +181,7 @@ public class UIAutoAnimation : MonoBehaviour
             /// Calculate delay per element
             /// The top-most UI on the list gets 0 second delay.
             /// Each subsequent element gets delayed by the amount.
-            float[] delayPerItem = CalculateDelayPerItem(delayPerItemType.TopToBottom, animationEntrancePresets.delayPerElementPosition);
+            float[] delayPerItem = CalculateDelayPerItem(DelayPerItemType.TopToBottom, animationEntrancePresets.delayPerElementPosition);
 
             /// Keep track of the time for each UI on the list
             /// because each UI has a different starting time based on the delay
@@ -246,7 +243,7 @@ public class UIAutoAnimation : MonoBehaviour
             /// Calculate delay per element
             /// The bottom-most UI on the list gets 0 second delay.
             /// Each subsequent element gets delayed by the amount.
-            float[] delayPerItem = CalculateDelayPerItem(delayPerItemType.BottomToTop, animationExitPresets.delayPerElementPosition);
+            float[] delayPerItem = CalculateDelayPerItem(DelayPerItemType.BottomToTop, animationExitPresets.delayPerElementPosition);
 
             /// Keep track of the time for each UI on the list
             /// because each UI has a different starting time based on the delay
@@ -307,7 +304,7 @@ public class UIAutoAnimation : MonoBehaviour
             /// Calculate delay per element
             /// The top-most UI on the list gets 0 second delay.
             /// Each subsequent element gets delayed by the amount.
-            float[] delayPerItem = CalculateDelayPerItem(delayPerItemType.TopToBottom, animationEntrancePresets.delayPerElementScale);
+            float[] delayPerItem = CalculateDelayPerItem(DelayPerItemType.TopToBottom, animationEntrancePresets.delayPerElementScale);
 
             /// Keep track of the time for each UI on the list
             /// because each UI has a different starting time based on the delay
@@ -369,7 +366,7 @@ public class UIAutoAnimation : MonoBehaviour
             /// Calculate delay per element
             /// The bottom-most UI on the list gets 0 second delay.
             /// Each subsequent element gets delayed by the amount.
-            float[] delayPerItem = CalculateDelayPerItem(delayPerItemType.BottomToTop, animationExitPresets.delayPerElementScale);
+            float[] delayPerItem = CalculateDelayPerItem(DelayPerItemType.BottomToTop, animationExitPresets.delayPerElementScale);
 
             /// Keep track of the time for each UI on the list
             /// because each UI has a different starting time based on the delay
@@ -430,7 +427,7 @@ public class UIAutoAnimation : MonoBehaviour
             /// Calculate delay per element
             /// The top-most UI on the list gets 0 second delay.
             /// Each subsequent element gets delayed by the amount.
-            float[] delayPerItem = CalculateDelayPerItem(delayPerItemType.TopToBottom, animationEntrancePresets.delayPerElementRotation);
+            float[] delayPerItem = CalculateDelayPerItem(DelayPerItemType.TopToBottom, animationEntrancePresets.delayPerElementRotation);
 
             /// Keep track of the time for each UI on the list
             /// because each UI has a different starting time based on the delay
@@ -493,7 +490,7 @@ public class UIAutoAnimation : MonoBehaviour
             /// Calculate delay per element
             /// The bottom-most UI on the list gets 0 second delay.
             /// Each subsequent element gets delayed by the amount.
-            float[] delayPerItem = CalculateDelayPerItem(delayPerItemType.BottomToTop, animationExitPresets.delayPerElementRotation);
+            float[] delayPerItem = CalculateDelayPerItem(DelayPerItemType.BottomToTop, animationExitPresets.delayPerElementRotation);
 
             /// Keep track of the time for each UI on the list
             /// because each UI has a different starting time based on the delay
@@ -539,6 +536,37 @@ public class UIAutoAnimation : MonoBehaviour
     }
     #endregion
 
+    #region Find Components and its Depth in Hierarchy
+    private void GetComponentInHierarchy_DepthFirst(Transform current, params Type[] types)
+    {
+        componentList = new List<Component>();
+
+        DepthFirstRecursion(current, 0, types);
+    }
+
+    private void DepthFirstRecursion(Transform current, int recursionLevel, params Type[] types)
+    {
+        //Get this object's T, if it exists and add it to the list
+        Component component = null;
+        foreach (Type type in types)
+        {
+            component = current.GetComponent(type);
+            if (component != null)
+            {
+                componentList.Add(component);
+            }
+        }
+
+        //Now, get all of its children transform and recursively use this function again.
+        int childCount = current.childCount;
+        for (int i = 0; i < childCount; i++)
+        {
+            DepthFirstRecursion(current.GetChild(i), recursionLevel++, types);
+        }
+    }
+
+    #endregion
+
     #region Helper Functions
     /// <summary>
     /// Search all components that will be used for animation
@@ -547,15 +575,7 @@ public class UIAutoAnimation : MonoBehaviour
     private void GetComponentsList()
     {
         //Get the component list, sorted either Depth-first or Breadth-first
-        componentList = new List<Component>();
-        if (searchMode == SearchMode.DepthFirst)
-        {
-            componentList = ComponentSearch.GetComponentInHierarchy_DepthFirst(transform, typeof(TextMeshProUGUI), typeof(Image));
-        }
-        else if (searchMode == SearchMode.BreadthFirst)
-        {
-            componentList = ComponentSearch.GetComponentInHierarchy_BreadthFirst(transform, typeof(TextMeshProUGUI), typeof(Image));
-        }
+        GetComponentInHierarchy_DepthFirst(transform, typeof(TextMeshProUGUI), typeof(Image));
 
         //Now replace the component with either TextMeshProUGUI or Image
         for (int i = 0; i < componentList.Count; i++)
@@ -657,7 +677,7 @@ public class UIAutoAnimation : MonoBehaviour
     /// <param name="delayPerItemType">TopToBottom is used in entrance animation. BottomToTop is used in exit animation</param>
     /// <param name="animationPresets">Specify to get the delayPerElement value from entrance or exit presets</param>
     /// <returns>Array of delayPerItem to count the animation delay in each element on the list</returns>
-    private float[] CalculateDelayPerItem(delayPerItemType delayPerItemType, float delayPerElement)
+    private float[] CalculateDelayPerItem(DelayPerItemType delayPerItemType, float delayPerElement)
     {
         float[] delayPerItem = new float[componentList.Count];
         for (int i = 0; i < componentList.Count; i++)
@@ -667,7 +687,7 @@ public class UIAutoAnimation : MonoBehaviour
             //For "Bottom to Top" used in Exit Animation, it does the opposite, where the last item is given 0
             //and increment each item backwards.
 
-            int increment = (delayPerItemType == delayPerItemType.TopToBottom) ? i : (componentList.Count - 1 - i);
+            int increment = (delayPerItemType == DelayPerItemType.TopToBottom) ? i : (componentList.Count - 1 - i);
             delayPerItem[i] = delayPerElement * increment;
         }
         return delayPerItem;
@@ -911,7 +931,7 @@ public class UIAutoAnimation : MonoBehaviour
     /// The iteration type when defining the delayPerItem. 
     /// TopToBottom is used in entrance animation. BottomToTop is used in exit animation
     /// </summary>
-    public enum delayPerItemType
+    public enum DelayPerItemType
     {
         TopToBottom, BottomToTop
     }

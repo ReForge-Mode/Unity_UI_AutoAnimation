@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 09becc92ca7be05459bdfa3f9c10c5b0, type: 3}
-  m_Name: Ease In Elastic Zoom InOut
+  m_Name: Elastic Easing Out
   m_EditorClassIdentifier: 
   useAlphaAnimation: 1
   alphaDelay: 0
@@ -42,113 +42,131 @@ MonoBehaviour:
     m_RotationOrder: 4
   usePositionAnimation: 0
   positionDelay: 0
-  positionDuration: 0.4
+  positionDuration: 0.75
   delayPerElementPosition: 0.2
-  offsetPosition: {x: -25, y: 0}
+  offsetPosition: {x: 0, y: 25}
   curvePosition:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 0.33
-      value: -0.25
-      inSlope: 1.8939394
-      outSlope: 1.8939394
+      inSlope: 16
+      outSlope: 16
       tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.66
-      value: 1.25
-      inSlope: 1.9050802
-      outSlope: 1.9050802
+      time: 0.1
+      value: 1.6
+      inSlope: -0.0017591454
+      outSlope: -0.0017591454
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 1
+    - serializedVersion: 3
+      time: 0.25
+      value: 0.7
+      inSlope: -1.8333335
+      outSlope: -1.8333335
       tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.4
+      value: 1.05
+      inSlope: 0.2774501
+      outSlope: 0.2774501
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.35777295
+    - serializedVersion: 3
+      time: 0.55
+      value: 0.9
+      inSlope: 0.003841877
+      outSlope: 0.003841877
+      tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
+      inSlope: 0.22222228
+      outSlope: 0.22222228
+      tangentMode: 34
       weightedMode: 0
-      inWeight: 0
-      outWeight: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
   useScaleAnimation: 1
   scaleDelay: 0
-  scaleDuration: 0.4
+  scaleDuration: 1
   delayPerElementScale: 0.2
-  offsetScale: {x: 1.25, y: 1.25}
+  offsetScale: {x: 1.5, y: 1.5}
   curveScale:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 0
-      outSlope: 0
+      inSlope: 16
+      outSlope: 16
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.1
+      value: 1.6
+      inSlope: -0.0017591454
+      outSlope: -0.0017591454
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0
-      outWeight: 0
+      inWeight: 0.33333334
+      outWeight: 1
+    - serializedVersion: 3
+      time: 0.25
+      value: 0.7
+      inSlope: -1.8333335
+      outSlope: -1.8333335
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
     - serializedVersion: 3
       time: 0.4
-      value: 0
-      inSlope: -0.18143305
-      outSlope: -0.18143305
+      value: 1.05
+      inSlope: 0.2774501
+      outSlope: 0.2774501
       tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
-      outWeight: 0.33333334
+      outWeight: 0.35777295
     - serializedVersion: 3
-      time: 0.6
-      value: -0.05
-      inSlope: 0.40888944
-      outSlope: 0.40888944
+      time: 0.55
+      value: 0.9
+      inSlope: 0.003841877
+      outSlope: 0.003841877
       tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.75
-      value: 0.15
-      inSlope: -0.9333332
-      outSlope: -0.9333332
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.875
-      value: -0.25
-      inSlope: 3.4
-      outSlope: 3.4
-      tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
+      inSlope: 0.22222228
+      outSlope: 0.22222228
+      tangentMode: 34
       weightedMode: 0
-      inWeight: 0
-      outWeight: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4

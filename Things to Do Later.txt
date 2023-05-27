@@ -1,0 +1,11 @@
+Easing Curves: https://easings.net/
+
+THINGS TO DO: 
+- Interruptible Fade In/Out Animation -> Will require a rewrite where there will only be one timer for every animation 
+- UI Timeline for easy visualization
+- TextMeshPro kerning option, where the letters expand in length
+- Exclude Button Text in Position and Rotation option -> Will need the script to remember which one is a child object
+
+FUTURE FEATURES
+- For the text-altering, we need some shader and masking
+- Emphasis (Effects over lifetime, with automatic fade out timer)

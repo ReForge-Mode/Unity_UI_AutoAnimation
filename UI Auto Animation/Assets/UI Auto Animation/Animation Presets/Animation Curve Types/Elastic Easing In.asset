@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 09becc92ca7be05459bdfa3f9c10c5b0, type: 3}
-  m_Name: Ease Out Elastic Zoom InOut
+  m_Name: Elastic Easing In
   m_EditorClassIdentifier: 
   useAlphaAnimation: 1
   alphaDelay: 0
@@ -98,45 +98,45 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 16
-      outSlope: 16
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.1
-      value: 1.6
-      inSlope: -0.0017591454
-      outSlope: -0.0017591454
+      inSlope: 0
+      outSlope: 0
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 1
-    - serializedVersion: 3
-      time: 0.25
-      value: 0.7
-      inSlope: -1.8333335
-      outSlope: -1.8333335
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
+      inWeight: 0
+      outWeight: 0
     - serializedVersion: 3
       time: 0.4
-      value: 1.05
-      inSlope: 0.2774501
-      outSlope: 0.2774501
+      value: 0.1
+      inSlope: 0.125
+      outSlope: 0.125
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.6
+      value: 0.1
+      inSlope: 0.40888944
+      outSlope: 0.40888944
       tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
-      outWeight: 0.35777295
+      outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.55
-      value: 1
-      inSlope: 0.003841877
-      outSlope: 0.003841877
-      tangentMode: 0
+      time: 0.75
+      value: 0.3
+      inSlope: -0.9333332
+      outSlope: -0.9333332
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.875
+      value: -0.1
+      inSlope: 2.8000002
+      outSlope: 2.8000002
+      tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334
       outWeight: 0.33333334
@@ -145,10 +145,10 @@ MonoBehaviour:
       value: 1
       inSlope: 0
       outSlope: 0
-      tangentMode: 34
+      tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
+      inWeight: 0
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
