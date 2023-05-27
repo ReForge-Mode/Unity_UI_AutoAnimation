@@ -12,5 +12,5 @@ If you want to use it, I highly recommend watching this short video on what it i
 # Download Instructions
 Go to the [Release](https://github.com/FFaUniHan/Unity_UI_AutoAnimation/releases) page to download a Unity package file. You can install it in your project by using Unity Package Manager or just by dragging this package file to your Project Window. Double clicking this package file while your project is opened in Unity also works.
 
-If you want some example project, you can download or clone this repo and open it in Unity Hub. This project uses Unity version 2022.2.17f1, earlier versions of Unity might not work, and later versions might break some of the scripts. To download a specific version of Unity, go to this website https://unity3d.com/get-unity/download/archive. After you download and install the Unity version, you can add this version of Unity back to Unity Hub and open it.
+If you want some example project, you can download or clone this repo and open it in Unity Hub. This project uses Unity version 2022.2.17f1, earlier versions of Unity might not work, and later versions might break some of the scripts. To download a specific version of Unity, go to this [Unity Archive](https://unity3d.com/get-unity/download/archive) website. After you download and install the Unity version, you can add this version of Unity back to Unity Hub and open it.
 
