@@ -1,5 +1,7 @@
 # UI Auto Animation
-A simple script that can be configured to create fade in and fade out animation for UI elements in Unity. It can control the transparency, position, size, and rotation of the UI elements, and any combinations of them in the animation. Click [here](https://github.com/FFaUniHan/Unity_UI_AutoAnimation/releases/download/v0.5.0/UIAutoAnimation-v0.5.0.unitypackage) to download it
+A simple script that can be configured to create fade in and fade out animation for UI elements in Unity. It can control the transparency, position, size, and rotation of the UI elements, and any combinations of them in the animation. 
+
+<b>Click [here](https://github.com/FFaUniHan/Unity_UI_AutoAnimation/releases/download/v0.5.0/UIAutoAnimation-v0.5.0.unitypackage) to download it</b>
 
 <p align="center"><img src="https://github.com/FFaUniHan/Unity_UI_AutoAnimation/blob/main/Demo.gif" width=100% height=100%></p>
 
