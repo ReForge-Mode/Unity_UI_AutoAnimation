@@ -12,6 +12,7 @@ public class UIAutoAnimation : MonoBehaviour
 
     private List<Component> componentList;
     private RectTransform[] rectTransformList;
+    private HorizontalOrVerticalLayoutGroup[] layoutGroupList;
     private float[] originalAlpha;
     private Vector2[] originalPosition;
     private Vector3[] originalScale;
@@ -218,6 +219,8 @@ public class UIAutoAnimation : MonoBehaviour
 
                     elapsedTime[i] += Time.deltaTime;
                 }
+
+                ResetAllLayoutGroup();
                 yield return null;
             }
         }
@@ -225,6 +228,7 @@ public class UIAutoAnimation : MonoBehaviour
         //There are always inaccuracies when dealing with float values
         //So to keep it safe, when the final loop is done, set everything to its final state.
         SetAllPosition_Original();
+        ResetAllLayoutGroup();
     }
 
     private IEnumerator ExitPositionEnumeration()
@@ -279,12 +283,15 @@ public class UIAutoAnimation : MonoBehaviour
 
                     elapsedTime[i] += Time.deltaTime;
                 }
+
+                ResetAllLayoutGroup();
                 yield return null;
             }
 
             //There are always inaccuracies when dealing with float values
             //So to keep it safe, when the final loop is done, set everything to its final state.
             SetAllPosition_Offset(animationExitPresets);
+            ResetAllLayoutGroup();
         }
     }
 
@@ -341,6 +348,7 @@ public class UIAutoAnimation : MonoBehaviour
 
                     elapsedTime[i] += Time.deltaTime;
                 }
+
                 yield return null;
             }
         }
@@ -402,6 +410,7 @@ public class UIAutoAnimation : MonoBehaviour
 
                     elapsedTime[i] += Time.deltaTime;
                 }
+
                 yield return null;
             }
 
@@ -464,6 +473,7 @@ public class UIAutoAnimation : MonoBehaviour
 
                     elapsedTime[i] += Time.deltaTime;
                 }
+
                 yield return null;
             }
         }
@@ -526,6 +536,7 @@ public class UIAutoAnimation : MonoBehaviour
 
                     elapsedTime[i] += Time.deltaTime;
                 }
+
                 yield return null;
             }
 
@@ -643,6 +654,11 @@ public class UIAutoAnimation : MonoBehaviour
             Vector3 rotation = rect.localRotation.eulerAngles;
             originalRotation[i] = rotation;
         }
+
+        //Get the Vertical Layout Group if it exists.
+        //If we set the position of the child object in the Layout Group,
+        //their position will reset to zero. So we need to recalculate them.
+        layoutGroupList = GetComponentsInChildren<HorizontalOrVerticalLayoutGroup>();
     }
 
     /// <summary>
@@ -923,6 +939,26 @@ public class UIAutoAnimation : MonoBehaviour
             offsetRotationList[i] = offset;
         }
         return offsetRotationList;
+    }
+
+    /// <summary>
+    /// Reset the layout group position. 
+    /// If we set the position of the child object in the Layout Group through script,
+    /// their position will reset to zero. So we need to recalculate them.
+    /// </summary>
+    private void ResetAllLayoutGroup()
+    {
+        if (layoutGroupList.Length > 0)
+        {
+            for (int i = 0; i < layoutGroupList.Length; i++)
+            {
+                layoutGroupList[i].CalculateLayoutInputVertical();
+                layoutGroupList[i].SetLayoutVertical();
+
+                layoutGroupList[i].CalculateLayoutInputHorizontal();
+                layoutGroupList[i].SetLayoutHorizontal();
+            }
+        }
     }
     #endregion
 
