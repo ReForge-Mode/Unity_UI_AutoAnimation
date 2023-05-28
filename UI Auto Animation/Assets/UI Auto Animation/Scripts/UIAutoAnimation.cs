@@ -634,7 +634,7 @@ public class UIAutoAnimation : MonoBehaviour
             RectTransform rect = componentList[i].GetComponent<RectTransform>();
             rectTransformList[i] = rect;
 
-            Vector2 position = rect.localPosition;
+            Vector2 position = rect.anchoredPosition;
             originalPosition[i] = position;
 
             Vector3 scale = rect.localScale;
@@ -752,7 +752,7 @@ public class UIAutoAnimation : MonoBehaviour
     /// <param name="value"></param>
     private void SetPosition(RectTransform rect, Vector2 value)
     {
-        rect.localPosition = value;
+        rect.anchoredPosition = value;
     }
 
     /// <summary>
